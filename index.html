@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IA+ITD | Plataforma de Transformación Digital</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-icon">
+          <i class="fa-solid fa-brain"></i>
+        </div>
+        <div>
+          <h1 class="brand-title">IA+ITD</h1>
+          <div class="brand-subtitle">IA + Transformación Digital</div>
+        </div>
+      </div>
+
+      <ul class="nav-menu">
+        <li><a href="#" class="nav-item active"><i class="fa-solid fa-chart-line"></i> Dashboard General</a></li>
+        <li><a href="#simulator" class="nav-item"><i class="fa-solid fa-robot"></i> Análisis Diagnóstico</a></li>
+        <li><a href="#pilares" class="nav-item"><i class="fa-solid fa-cubes"></i> Dictámenes de Agentes</a></li>
+        <li><a href="#tracker-section" class="nav-item"><i class="fa-solid fa-list-check"></i> Tablero de Avances</a></li>
+        <li><a href="#report-anchor" class="nav-item" id="nav-report-link"><i class="fa-solid fa-file-pdf"></i> Informe Final Exhaustivo</a></li>
+      </ul>
+
+      <div class="system-status">
+        <div>Plataforma IA+ITD</div>
+        <div class="status-indicator">
+          <span class="dot-ping"></span>
+          <span id="status-text">5 Agentes Activos</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      
+      <!-- Top Header Bar -->
+      <header class="top-header">
+        <div>
+          <h2 class="page-title">IA+ITD | Transformación Digital con Agentes de IA</h2>
+          <p class="page-desc">Diagnóstico exhaustivo, acciones paso a paso, tiempos por agente y seguimiento de avances</p>
+        </div>
+
+        <div style="display:flex; gap: 1rem; align-items:center;">
+          <button class="btn-primary" id="btn-open-report" style="background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue)); color:#fff; display:none;">
+            <i class="fa-solid fa-file-pdf"></i> Ver Informe Final Exhaustivo
+          </button>
+
+          <div class="mode-toggle">
+            <button class="mode-btn active" id="btn-mode-sim">Motor de Análisis</button>
+            <button class="mode-btn" id="btn-mode-api">Backend FastAPI</button>
+          </div>
+        </div>
+      </header>
+
+      <!-- KPI Metric Cards Grid (5 Pillars) -->
+      <section class="kpi-grid">
+        <div class="kpi-card ops">
+          <span class="kpi-label"><i class="fa-solid fa-gears"></i> Operaciones & Procesos</span>
+          <div class="kpi-value" id="kpi-ops">--</div>
+          <span class="kpi-sub"><i class="fa-solid fa-clock"></i> Reducción de Tiempos</span>
+        </div>
+
+        <div class="kpi-card roi">
+          <span class="kpi-label"><i class="fa-solid fa-dollar-sign"></i> ROI & Valor Financiero</span>
+          <div class="kpi-value" id="kpi-roi">--</div>
+          <span class="kpi-sub"><i class="fa-solid fa-chart-line"></i> Retorno Proyectado</span>
+        </div>
+
+        <div class="kpi-card gov">
+          <span class="kpi-label"><i class="fa-solid fa-shield"></i> Gobernanza & Riesgo</span>
+          <div class="kpi-value" id="kpi-gov">--</div>
+          <span class="kpi-sub"><i class="fa-solid fa-check-double"></i> Nivel de Cumplimiento</span>
+        </div>
+
+        <div class="kpi-card culture">
+          <span class="kpi-label"><i class="fa-solid fa-users"></i> Cultura & Talento</span>
+          <div class="kpi-value" id="kpi-culture">--</div>
+          <span class="kpi-sub"><i class="fa-solid fa-graduation-cap"></i> Preparación del Equipo</span>
+        </div>
+
+        <div class="kpi-card tech">
+          <span class="kpi-label"><i class="fa-solid fa-network-wired"></i> Tecnología & APIs</span>
+          <div class="kpi-value" id="kpi-tech">--</div>
+          <span class="kpi-sub"><i class="fa-solid fa-bolt"></i> Arquitectura de Integración</span>
+        </div>
+      </section>
+
+      <!-- Interactive Multi-Agent Simulator Section -->
+      <section class="simulator-section" id="simulator">
+        
+        <!-- Input & Control Panel -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title"><i class="fa-solid fa-file-signature" style="color: var(--accent-cyan);"></i> Diagnóstico Inicial de la Empresa</h3>
+            <span style="font-size: 0.8rem; color: var(--text-muted);" id="execution-status-label">Ingresa la problemática</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Seleccionar Escenario o Ingresar Diagnóstico Real:</label>
+            <select class="form-select" id="preset-scenario">
+              <option value="1">1. Aprobación y Pago de Facturas en SAP / Excel (Finanzas)</option>
+              <option value="2">2. Onboarding de Nuevos Empleados y Accesos IT (RRHH / Operaciones)</option>
+              <option value="3">3. Triaje y Resolución de Tickets de Soporte Técnico (Mesa de Ayuda)</option>
+              <option value="custom">-- Pegar Diagnóstico Real de la Empresa --</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Descripción Detallada del Diagnóstico:</label>
+            <textarea class="form-textarea" id="process-description" style="min-height:130px;">El departamento financiero recibe 500 facturas mensuales en PDF por correo. Los analistas revisan manualmente cada factura, la digitan en Excel, buscan el centro de costo en SAP y solicitan aprobación vía Email a gerencia. El proceso toma 14 horas por lote y genera errores de digitación.</textarea>
+          </div>
+
+          <button class="btn-primary" id="btn-run-simulation">
+            <i class="fa-solid fa-brain"></i> Iniciar Análisis Exhaustivo de Agentes
+          </button>
+        </div>
+
+        <!-- Live Pipeline & Terminal Window -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title"><i class="fa-solid fa-terminal" style="color: var(--accent-emerald);"></i> Consola de Pensamiento de los Agentes IA+ITD</h3>
+            <button id="btn-clear-terminal" style="background:transparent; border:none; color:var(--text-muted); cursor:pointer; font-size:0.8rem;"><i class="fa-solid fa-eraser"></i> Limpiar</button>
+          </div>
+
+          <!-- Step Pipeline visualizer -->
+          <div class="pipeline-status">
+            <div class="pipeline-step waiting" id="step-ops">1. Ops</div>
+            <div class="pipeline-step waiting" id="step-roi">2. ROI</div>
+            <div class="pipeline-step waiting" id="step-gov">3. Gov</div>
+            <div class="pipeline-step waiting" id="step-culture">4. Cult</div>
+            <div class="pipeline-step waiting" id="step-tech">5. Tech</div>
+          </div>
+
+          <!-- Console Terminal -->
+          <div class="terminal-window" id="terminal-output">
+            <div class="log-entry">
+              <span class="log-time">[00:00:00]</span>
+              <span style="color: var(--text-muted);">Bienvenido a IA+ITD. Ingresa el diagnóstico y presiona 'Iniciar Análisis Exhaustivo' para evaluar tu empresa.</span>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Questions & Clarifications Alert Box -->
+      <section id="missing-info-section" style="display:none;">
+        <div class="card" style="border: 1px solid var(--accent-amber); background: rgba(245, 158, 11, 0.05);">
+          <div class="card-header" style="border-bottom-color: rgba(245, 158, 11, 0.2);">
+            <h3 class="card-title" style="color: var(--accent-amber);"><i class="fa-solid fa-circle-question"></i> Información Faltante Requerida por los Agentes IA+ITD</h3>
+            <span style="font-size:0.8rem; color: var(--accent-amber);">Responde para refinar y re-evaluar el informe</span>
+          </div>
+          <div id="missing-questions-list" style="display:flex; flex-direction:column; gap:0.75rem;">
+            <!-- Questions injected dynamically -->
+          </div>
+          <div style="margin-top: 1rem; display:flex; justify-content:flex-end;">
+            <button class="btn-primary" id="btn-submit-answers" style="background: linear-gradient(135deg, var(--accent-amber), var(--accent-blue)); color:#000;">
+              <i class="fa-solid fa-arrows-rotate"></i> Re-evaluar Análisis con la Nueva Información
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Interactive 5 Agent Cards Section -->
+      <section id="pilares">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1rem;">
+          <div>
+            <h3 style="font-size: 1.3rem;"><i class="fa-solid fa-users-gears"></i> Dictámenes del Escuadrón de Agentes IA+ITD</h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">Haz clic sobre cualquier ficha para examinar el análisis exhaustivo, preguntas y orientaciones de cada agente.</p>
+          </div>
+          <span class="agent-badge ops" style="font-size:0.8rem; padding:0.4rem 0.8rem;">Haz Clic en una Ficha</span>
+        </div>
+        
+        <div class="pillar-grid">
+          
+          <!-- Agent 1 Card -->
+          <div class="agent-profile-card clickable" data-agent="ops">
+            <div class="agent-header">
+              <span class="agent-badge ops">Operaciones</span>
+              <i class="fa-solid fa-gears" style="color: var(--pillar-ops); font-size: 1.2rem;"></i>
+            </div>
+            <h4>ProcessOptimizer_Agent</h4>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">Análisis de Flujo As-Is / To-Be y Reducción de Tiempos.</p>
+            <div class="card-status-label" id="status-card-ops">Estado: Pendiente</div>
+            <div class="click-hint"><i class="fa-solid fa-hand-pointer"></i> Ver dictamen exhaustivo</div>
+          </div>
+
+          <!-- Agent 2 Card -->
+          <div class="agent-profile-card clickable" data-agent="roi">
+            <div class="agent-header">
+              <span class="agent-badge roi">ROI & Valor</span>
+              <i class="fa-solid fa-chart-pie" style="color: var(--pillar-roi); font-size: 1.2rem;"></i>
+            </div>
+            <h4>ROI_Guardian_Agent</h4>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">Modelo Financiero de Ahorro, CAPEX/OPEX y Payback.</p>
+            <div class="card-status-label" id="status-card-roi">Estado: Pendiente</div>
+            <div class="click-hint"><i class="fa-solid fa-hand-pointer"></i> Ver dictamen exhaustivo</div>
+          </div>
+
+          <!-- Agent 3 Card -->
+          <div class="agent-profile-card clickable" data-agent="gov">
+            <div class="agent-header">
+              <span class="agent-badge gov">Gobernanza</span>
+              <i class="fa-solid fa-user-shield" style="color: var(--pillar-gov); font-size: 1.2rem;"></i>
+            </div>
+            <h4>Governance_Compliance_Agent</h4>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">Matriz de Riesgos, Protección PII e ISO 27001.</p>
+            <div class="card-status-label" id="status-card-gov">Estado: Pendiente</div>
+            <div class="click-hint"><i class="fa-solid fa-hand-pointer"></i> Ver dictamen exhaustivo</div>
+          </div>
+
+          <!-- Agent 4 Card -->
+          <div class="agent-profile-card clickable" data-agent="culture">
+            <div class="agent-header">
+              <span class="agent-badge culture">Cultura</span>
+              <i class="fa-solid fa-people-group" style="color: var(--pillar-culture); font-size: 1.2rem;"></i>
+            </div>
+            <h4>People_Culture_Agent</h4>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">Gestión del Cambio, Resistencia y Capacitaciones.</p>
+            <div class="card-status-label" id="status-card-culture">Estado: Pendiente</div>
+            <div class="click-hint"><i class="fa-solid fa-hand-pointer"></i> Ver dictamen exhaustivo</div>
+          </div>
+
+          <!-- Agent 5 Card -->
+          <div class="agent-profile-card clickable" data-agent="tech">
+            <div class="agent-header">
+              <span class="agent-badge tech">Tecnología</span>
+              <i class="fa-solid fa-code" style="color: var(--pillar-tech); font-size: 1.2rem;"></i>
+            </div>
+            <h4>Tech_Connector_Agent</h4>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">Arquitectura de APIs, Middleware y Conectores.</p>
+            <div class="card-status-label" id="status-card-tech">Estado: Pendiente</div>
+            <div class="click-hint"><i class="fa-solid fa-hand-pointer"></i> Ver dictamen exhaustivo</div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- TABLERO DE SEGUIMIENTO DE AVANCES -->
+      <section id="tracker-section" style="display:none; margin-top:1rem;">
+        <div class="card">
+          <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <h3 class="card-title" style="color:var(--accent-emerald);"><i class="fa-solid fa-list-check"></i> Tablero de Seguimiento de Avance IA+ITD</h3>
+              <p style="font-size:0.85rem; color:var(--text-muted); margin-top:0.25rem;">El cliente puede marcar los avances de cada etapa, actualizar estados y ver el % global completado.</p>
+            </div>
+
+            <!-- Global Progress Gauge -->
+            <div style="text-align:right;">
+              <div style="font-size:0.8rem; color:var(--text-muted);">Índice de Avance Real:</div>
+              <div id="tracker-progress-percentage" style="font-size:1.8rem; font-family:'Outfit',sans-serif; font-weight:700; color:var(--accent-emerald);">0%</div>
+            </div>
+          </div>
+
+          <!-- Progress Bar -->
+          <div style="background:rgba(255,255,255,0.05); height:12px; border-radius:6px; overflow:hidden; border:1px solid var(--border-color);">
+            <div id="tracker-progress-bar" style="width:0%; height:100%; background:linear-gradient(90deg, var(--accent-cyan), var(--accent-emerald)); transition:width 0.4s ease;"></div>
+          </div>
+
+          <!-- Interactive Milestone Tracker List -->
+          <div id="tracker-milestones-list" style="display:flex; flex-direction:column; gap:1rem; margin-top:1rem;">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+  </div>
+
+  <!-- MODAL: DETALLE INDIVIDUAL DEL AGENTE -->
+  <div class="modal-backdrop" id="modal-agent">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modal-agent-title"><i class="fa-solid fa-robot"></i> Dictamen del Agente</h3>
+        <button class="modal-close" id="btn-close-agent-modal">&times;</button>
+      </div>
+      <div class="modal-body" id="modal-agent-body">
+        <!-- Dynamic Content -->
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: INFORME FINAL EXHAUSTIVO SIN RECORTES -->
+  <div class="modal-backdrop" id="modal-report">
+    <div class="modal-content large printable">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-file-contract"></i> IA+ITD - Informe Final Exhaustivo de Transformación Digital</h3>
+        <div style="display:flex; gap:0.5rem; align-items:center;">
+          <button class="btn-primary" id="btn-print-report" style="font-size:0.85rem; padding:0.4rem 0.8rem;"><i class="fa-solid fa-print"></i> Imprimir / Guardar PDF</button>
+          <button class="modal-close" id="btn-close-report-modal">&times;</button>
+        </div>
+      </div>
+      <div class="modal-body" id="modal-report-body">
+        <!-- Dynamic Detailed Report Content -->
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
