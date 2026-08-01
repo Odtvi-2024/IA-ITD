@@ -899,6 +899,9 @@ h1, h2, h3, h4, .brand-title {
         </div>
 
         <div style="display:flex; gap: 1rem; align-items:center;">
+          <button class="btn-primary" id="btn-header-run" onclick="if(window.triggerSimulation) window.triggerSimulation();" style="background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue)); color:#fff; font-weight:bold; font-size:0.85rem; padding:0.5rem 0.9rem;">
+            <i class="fa-solid fa-play"></i> Ejecutar 6 Agentes
+          </button>
           <button class="btn-primary" id="btn-new-analysis" onclick="if(window.resetForNewCompany) window.resetForNewCompany();" style="background: linear-gradient(135deg, var(--accent-emerald), var(--accent-cyan)); color:#000; font-weight:bold; font-size:0.85rem; padding:0.5rem 0.9rem;">
             <i class="fa-solid fa-plus-circle"></i> Evaluar Nueva Empresa
           </button>
@@ -1096,39 +1099,6 @@ h1, h2, h3, h4, .brand-title {
       <div id="screen-diagnostic" style="display:block;">
 
         <!-- KPI Metric Cards Grid (5 Pillars) -->
-        <section class="kpi-grid">
-          <div class="kpi-card ops">
-            <span class="kpi-label"><i class="fa-solid fa-gears"></i> Operaciones & Procesos</span>
-            <div class="kpi-value" id="kpi-ops">--</div>
-            <span class="kpi-sub"><i class="fa-solid fa-clock"></i> Reducción de Tiempos</span>
-          </div>
-
-          <div class="kpi-card roi">
-            <span class="kpi-label"><i class="fa-solid fa-dollar-sign"></i> ROI & Valor Financiero</span>
-            <div class="kpi-value" id="kpi-roi">--</div>
-            <span class="kpi-sub"><i class="fa-solid fa-chart-line"></i> Retorno Proyectado</span>
-          </div>
-
-          <div class="kpi-card gov">
-            <span class="kpi-label"><i class="fa-solid fa-shield"></i> Gobernanza & Riesgo</span>
-            <div class="kpi-value" id="kpi-gov">--</div>
-            <span class="kpi-sub"><i class="fa-solid fa-check-double"></i> Nivel de Cumplimiento</span>
-          </div>
-
-          <div class="kpi-card culture">
-            <span class="kpi-label"><i class="fa-solid fa-users"></i> Cultura & Talento</span>
-            <div class="kpi-value" id="kpi-culture">--</div>
-            <span class="kpi-sub"><i class="fa-solid fa-graduation-cap"></i> Preparación del Equipo</span>
-          </div>
-
-          <div class="kpi-card tech">
-            <span class="kpi-label"><i class="fa-solid fa-network-wired"></i> Tecnología & APIs</span>
-            <div class="kpi-value" id="kpi-tech">--</div>
-            <span class="kpi-sub"><i class="fa-solid fa-bolt"></i> Arquitectura de Integración</span>
-          </div>
-        </section>
-
-        <!-- Interactive Multi-Agent Simulator Section -->
         <section class="simulator-section" id="simulator">
           <!-- Input & Control Panel -->
           <div class="card">
@@ -1192,6 +1162,40 @@ h1, h2, h3, h4, .brand-title {
                 <span style="color: var(--text-muted);">Listo para recibir el diagnóstico situacional de la empresa y ejecutar la simulación de 6 agentes.</span>
               </div>
             </div>
+          </div>
+        </section>
+
+<!-- Interactive Multi-Agent Simulator Section -->
+
+<section class="kpi-grid">
+          <div class="kpi-card ops">
+            <span class="kpi-label"><i class="fa-solid fa-gears"></i> Operaciones & Procesos</span>
+            <div class="kpi-value" id="kpi-ops">--</div>
+            <span class="kpi-sub"><i class="fa-solid fa-clock"></i> Reducción de Tiempos</span>
+          </div>
+
+          <div class="kpi-card roi">
+            <span class="kpi-label"><i class="fa-solid fa-dollar-sign"></i> ROI & Valor Financiero</span>
+            <div class="kpi-value" id="kpi-roi">--</div>
+            <span class="kpi-sub"><i class="fa-solid fa-chart-line"></i> Retorno Proyectado</span>
+          </div>
+
+          <div class="kpi-card gov">
+            <span class="kpi-label"><i class="fa-solid fa-shield"></i> Gobernanza & Riesgo</span>
+            <div class="kpi-value" id="kpi-gov">--</div>
+            <span class="kpi-sub"><i class="fa-solid fa-check-double"></i> Nivel de Cumplimiento</span>
+          </div>
+
+          <div class="kpi-card culture">
+            <span class="kpi-label"><i class="fa-solid fa-users"></i> Cultura & Talento</span>
+            <div class="kpi-value" id="kpi-culture">--</div>
+            <span class="kpi-sub"><i class="fa-solid fa-graduation-cap"></i> Preparación del Equipo</span>
+          </div>
+
+          <div class="kpi-card tech">
+            <span class="kpi-label"><i class="fa-solid fa-network-wired"></i> Tecnología & APIs</span>
+            <div class="kpi-value" id="kpi-tech">--</div>
+            <span class="kpi-sub"><i class="fa-solid fa-bolt"></i> Arquitectura de Integración</span>
           </div>
         </section>
 
