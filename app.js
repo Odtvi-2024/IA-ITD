@@ -243,30 +243,37 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    isRunning = true;
-    btnRun.disabled = true;
-    const originalBtnText = btnRun.innerHTML;
-    btnRun.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Ejecutando 6 Agentes IA+ITD...`;
-    statusLabel.textContent = "Analizando brecha (As-Is vs. To-Be)...";
-    resetPipelineUI();
-    missingInfoSection.style.display = "none";
+    try {
+      isRunning = true;
+      btnRun.disabled = true;
+      const originalBtnText = btnRun.innerHTML;
+      btnRun.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Ejecutando 6 Agentes IA+ITD...`;
+      if (statusLabel) statusLabel.textContent = "Analizando brecha (As-Is vs. To-Be)...";
+      resetPipelineUI();
+      if (missingInfoSection) missingInfoSection.style.display = "none";
 
-    await runExhaustiveAnalysis(text, objective);
+      await runExhaustiveAnalysis(text, objective);
 
-    isRunning = false;
-    btnRun.disabled = false;
-    btnRun.innerHTML = originalBtnText;
-    statusLabel.textContent = "Análisis completado con éxito";
-    btnOpenReport.style.display = "flex";
-    trackerSection.style.display = "block";
-    if (analyticsSection) analyticsSection.style.display = "block";
+      isRunning = false;
+      btnRun.disabled = false;
+      btnRun.innerHTML = originalBtnText;
+      if (statusLabel) statusLabel.textContent = "Análisis completado con éxito";
+      if (btnOpenReport) btnOpenReport.style.display = "flex";
+      if (trackerSection) trackerSection.style.display = "block";
+      if (analyticsSection) analyticsSection.style.display = "block";
 
-    // Auto-scroll a las preguntas deducidas o dictámenes
-    if (missingInfoSection && missingInfoSection.style.display !== "none") {
-      missingInfoSection.scrollIntoView({ behavior: 'smooth' });
-    } else {
-      const pilaresEl = document.getElementById('pilares');
-      if (pilaresEl) pilaresEl.scrollIntoView({ behavior: 'smooth' });
+      // Auto-scroll a las preguntas deducidas o dictámenes
+      if (missingInfoSection && missingInfoSection.style.display !== "none") {
+        missingInfoSection.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        const pilaresEl = document.getElementById('pilares');
+        if (pilaresEl) pilaresEl.scrollIntoView({ behavior: 'smooth' });
+      }
+    } catch (err) {
+      console.error("Error en ejecución de agentes:", err);
+      isRunning = false;
+      btnRun.disabled = false;
+      btnRun.innerHTML = `<i class="fa-solid fa-brain"></i> Iniciar Análisis Exhaustivo de Agentes`;
     }
   });
 
@@ -576,8 +583,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     logTerminal("ProcessOptimizer_Agent", "Dictamen de Operaciones completado:", "ops", opsOutput);
     setStepState('ops', 'completed');
-    kpiOps.textContent = `90% Reducción`;
-    document.getElementById('status-card-ops').textContent = `Tiempo: 2 Semanas`;
+    if (kpiOps) kpiOps.textContent = `90% Reducción`;
+    const cardOps = document.getElementById('status-card-ops');
+    if (cardOps) cardOps.textContent = `Tiempo: 2 Semanas`;
     await delay(120);
 
     // AGENT 2: ROI_Guardian_Agent
@@ -619,8 +627,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     logTerminal("ROI_Guardian_Agent", "Dictamen Financiero completado:", "roi", roiOutput);
     setStepState('roi', 'completed');
-    kpiRoi.textContent = `+${roiYear1}% ROI`;
-    document.getElementById('status-card-roi').textContent = `Payback: ${paybackMonths} meses`;
+    if (kpiRoi) kpiRoi.textContent = `+${roiYear1}% ROI`;
+    const cardRoi = document.getElementById('status-card-roi');
+    if (cardRoi) cardRoi.textContent = `Payback: ${paybackMonths} meses`;
     await delay(120);
 
     // AGENT 3: Governance_Compliance_Agent
@@ -651,8 +660,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     logTerminal("Governance_Compliance_Agent", "Dictamen de Gobernanza completado:", "gov", govOutput);
     setStepState('gov', 'completed');
-    kpiGov.textContent = "ISO 27001 OK";
-    document.getElementById('status-card-gov').textContent = "Cumplimiento: ISO 27001";
+    if (kpiGov) kpiGov.textContent = "ISO 27001 OK";
+    const cardGov = document.getElementById('status-card-gov');
+    if (cardGov) cardGov.textContent = "Cumplimiento: ISO 27001";
     await delay(120);
 
     // AGENT 4: People_Culture_Agent
@@ -681,8 +691,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     logTerminal("People_Culture_Agent", "Dictamen de Cultura completado:", "culture", cultureOutput);
     setStepState('culture', 'completed');
-    kpiCulture.textContent = "85/100 Prep";
-    document.getElementById('status-card-culture').textContent = "Capacitación: 3 Semanas";
+    if (kpiCulture) kpiCulture.textContent = "85/100 Prep";
+    const cardCult = document.getElementById('status-card-culture');
+    if (cardCult) cardCult.textContent = "Capacitación: 3 Semanas";
     await delay(120);
 
     // AGENT 5: Tech_Connector_Agent
@@ -712,8 +723,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     logTerminal("Tech_Connector_Agent", "Dictamen Técnico completado:", "tech", techOutput);
     setStepState('tech', 'completed');
-    kpiTech.textContent = "Arquitectura OK";
-    document.getElementById('status-card-tech').textContent = "APIs: 2 Semanas";
+    if (kpiTech) kpiTech.textContent = "Arquitectura OK";
+    const cardTech = document.getElementById('status-card-tech');
+    if (cardTech) cardTech.textContent = "APIs: 2 Semanas";
     await delay(120);
 
     // AGENT 6: Agile_Scrum_Agent
@@ -742,7 +754,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     logTerminal("Agile_Scrum_Agent", "Dictamen Ágil completado:", "agile", agileOutput);
     setStepState('agile', 'completed');
-    document.getElementById('status-card-agile').textContent = "Sprints: 2 Semanas";
+    const cardAgile = document.getElementById('status-card-agile');
+    if (cardAgile) cardAgile.textContent = "Sprints: 2 Semanas";
 
     // Consolidated Timeline Roadmap
     const timelineRoadmap = [
