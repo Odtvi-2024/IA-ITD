@@ -1149,20 +1149,13 @@ h1, h2, h3, h4, .brand-title {
             </div>
 
             <div class="form-group">
-              <label class="form-label">1. Problemática / Situación Actual de la Empresa (As-Is):</label>
-              <textarea class="form-textarea" id="process-description" style="min-height:90px;" placeholder="Describe los problemas, procesos manuales, cuellos de botella, equipo y situación actual de la empresa..."></textarea>
+              <label class="form-label">Problemática / Situación Actual de la Empresa:</label>
+              <textarea class="form-textarea" id="process-description" style="min-height:130px;" placeholder="Describe los problemas, procesos manuales, ventas, cuellos de botella y situación actual de la empresa..."></textarea>
+              <!-- Hidden fallback to prevent null pointer exceptions -->
+              <textarea id="company-objective" style="display:none;"></textarea>
             </div>
 
-            <button class="btn-primary" id="btn-run-simulation-top" style="margin-bottom: 1rem; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-emerald)); font-size: 1rem; padding: 0.75rem;">
-              <i class="fa-solid fa-rocket"></i> Iniciar Análisis Exhaustivo de Agentes
-            </button>
-
-            <div class="form-group">
-              <label class="form-label">2. Objetivo / Meta Deseada de la Empresa (To-Be) [Opcional]:</label>
-              <textarea class="form-textarea" id="company-objective" style="min-height:75px;" placeholder="Describe qué busca lograr la empresa (ej: agregar mayor valor a nuestros servicios de diseño, duplicar facturación sin aumentar nómina, etc.)..."></textarea>
-            </div>
-
-            <button class="btn-primary" id="btn-run-simulation">
+            <button class="btn-primary" id="btn-run-simulation" onclick="if(window.triggerSimulation) window.triggerSimulation();" style="font-size: 1rem; padding: 0.8rem; margin-top: 0.5rem;">
               <i class="fa-solid fa-brain"></i> Iniciar Análisis Exhaustivo de Agentes
             </button>
           </div>
