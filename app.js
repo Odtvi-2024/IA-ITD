@@ -239,11 +239,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!text) {
       alert("Por favor ingresa la problemática o situación actual de tu empresa en el cuadro 1.");
+      processTextArea.focus();
       return;
     }
 
     isRunning = true;
     btnRun.disabled = true;
+    const originalBtnText = btnRun.innerHTML;
+    btnRun.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Ejecutando 6 Agentes IA+ITD...`;
     statusLabel.textContent = "Analizando brecha (As-Is vs. To-Be)...";
     resetPipelineUI();
     missingInfoSection.style.display = "none";
@@ -252,10 +255,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     isRunning = false;
     btnRun.disabled = false;
-    statusLabel.textContent = "Análisis completado";
+    btnRun.innerHTML = originalBtnText;
+    statusLabel.textContent = "Análisis completado con éxito";
     btnOpenReport.style.display = "flex";
     trackerSection.style.display = "block";
     if (analyticsSection) analyticsSection.style.display = "block";
+
+    // Auto-scroll a las preguntas deducidas o dictámenes
+    if (missingInfoSection && missingInfoSection.style.display !== "none") {
+      missingInfoSection.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      const pilaresEl = document.getElementById('pilares');
+      if (pilaresEl) pilaresEl.scrollIntoView({ behavior: 'smooth' });
+    }
   });
 
   // Slider de Escala de Negocio
@@ -510,7 +522,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Exhaustive Multi-Agent Analysis Engine
   async function runExhaustiveAnalysis(diagnosticText, companyObjectiveText = "", isReevaluation = false) {
     logTerminal("ORQUESTADOR IA+ITD", `${isReevaluation ? 'Re-evaluando' : 'Iniciando'} análisis situacional sobre la problemática y meta deseada...`, "tech");
-    await delay(500);
+    await delay(120);
 
     const systemsFound = [];
     const textUpper = (diagnosticText + " " + companyObjectiveText).toUpperCase();
@@ -537,7 +549,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // AGENT 1: ProcessOptimizer_Agent
     setStepState('ops', 'active');
     logTerminal("ProcessOptimizer_Agent", "Iniciando descomposición de la situación operacional de la empresa...", "ops");
-    await delay(800);
+    await delay(120);
 
     const opsOutput = {
       agent: "ProcessOptimizer_Agent",
@@ -566,12 +578,12 @@ document.addEventListener('DOMContentLoaded', () => {
     setStepState('ops', 'completed');
     kpiOps.textContent = `90% Reducción`;
     document.getElementById('status-card-ops').textContent = `Tiempo: 2 Semanas`;
-    await delay(600);
+    await delay(120);
 
     // AGENT 2: ROI_Guardian_Agent
     setStepState('roi', 'active');
     logTerminal("ROI_Guardian_Agent", "Generando modelo financiero adaptado a la situación de costo de la empresa...", "roi");
-    await delay(900);
+    await delay(120);
 
     const hoursSavedMonthly = Math.round(estimatedHours * 10);
     const monthlySavings = hoursSavedMonthly * customHourlyRate;
@@ -609,12 +621,12 @@ document.addEventListener('DOMContentLoaded', () => {
     setStepState('roi', 'completed');
     kpiRoi.textContent = `+${roiYear1}% ROI`;
     document.getElementById('status-card-roi').textContent = `Payback: ${paybackMonths} meses`;
-    await delay(600);
+    await delay(120);
 
     // AGENT 3: Governance_Compliance_Agent
     setStepState('gov', 'active');
     logTerminal("Governance_Compliance_Agent", "Auditando requisitos normativos y sensibilidad de datos...", "gov");
-    await delay(800);
+    await delay(120);
 
     const hasPII = textUpper.includes("EMPLEADO") || textUpper.includes("CLIENTE") || textUpper.includes("PERSONA") || textUpper.includes("RUT") || textUpper.includes("CORREO");
     const govOutput = {
@@ -641,12 +653,12 @@ document.addEventListener('DOMContentLoaded', () => {
     setStepState('gov', 'completed');
     kpiGov.textContent = "ISO 27001 OK";
     document.getElementById('status-card-gov').textContent = "Cumplimiento: ISO 27001";
-    await delay(600);
+    await delay(120);
 
     // AGENT 4: People_Culture_Agent
     setStepState('culture', 'active');
     logTerminal("People_Culture_Agent", "Diseñando estrategia de gestión del cambio atinente a la situación del equipo...", "culture");
-    await delay(800);
+    await delay(120);
 
     const cultureOutput = {
       agent: "People_Culture_Agent",
@@ -671,12 +683,12 @@ document.addEventListener('DOMContentLoaded', () => {
     setStepState('culture', 'completed');
     kpiCulture.textContent = "85/100 Prep";
     document.getElementById('status-card-culture').textContent = "Capacitación: 3 Semanas";
-    await delay(600);
+    await delay(120);
 
     // AGENT 5: Tech_Connector_Agent
     setStepState('tech', 'active');
     logTerminal("Tech_Connector_Agent", "Construyendo conectores e integraciones para los sistemas detectados...", "tech");
-    await delay(700);
+    await delay(120);
 
     const techOutput = {
       agent: "Tech_Connector_Agent",
@@ -702,12 +714,12 @@ document.addEventListener('DOMContentLoaded', () => {
     setStepState('tech', 'completed');
     kpiTech.textContent = "Arquitectura OK";
     document.getElementById('status-card-tech').textContent = "APIs: 2 Semanas";
-    await delay(600);
+    await delay(120);
 
     // AGENT 6: Agile_Scrum_Agent
     setStepState('agile', 'active');
     logTerminal("Agile_Scrum_Agent", "Diseñando arquitectura de Sprints, User Stories y definición de MVP...", "agile");
-    await delay(700);
+    await delay(120);
 
     const agileOutput = {
       agent: "Agile_Scrum_Agent",
