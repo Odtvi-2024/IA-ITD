@@ -234,13 +234,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   btnRun.addEventListener('click', async () => {
     if (isRunning) return;
-    const text = processTextArea.value.trim();
-    const objective = objectiveTextArea ? objectiveTextArea.value.trim() : "";
+    let text = processTextArea.value.trim();
+    let objective = objectiveTextArea ? objectiveTextArea.value.trim() : "";
 
+    // Si los recuadros están vacíos, autocompletar con un caso real de la Pyme para ejecutar directamente
     if (!text) {
-      alert("Por favor ingresa la problemática o situación actual de tu empresa en el cuadro 1.");
-      processTextArea.focus();
-      return;
+      text = "Mi empresa es pequeña, tenemos un nivel de venta de 25.000.000 de pesos mensuales. Somos una empresa que se dedica a dar servicios de diseño industrial. Somos en total 8 trabajadores full-time y los otros los contratamos part-time dependiendo de la demanda.";
+      processTextArea.value = text;
+      if (objectiveTextArea && !objective) {
+        objective = "Agregar mayor valor estratégico a nuestros servicios de diseño industrial, automatizar procesos operativos y duplicar nuestro margen sin sobrecargar la nómina.";
+        objectiveTextArea.value = objective;
+      }
     }
 
     try {
