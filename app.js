@@ -1,4 +1,3 @@
-
 /* ==========================================================================
    LÓGICA DEL FRONTEND - IA+ITD (INFORME FINAL COMPLETO CON GUÍA DE ACCIONES)
    ========================================================================== */
@@ -252,6 +251,9 @@
     clientClarifications = {};
   });
 
+  const btnRunTop = document.getElementById('btn-run-simulation-top');
+  const btnHeaderRun = document.getElementById('btn-header-run');
+
   async function triggerSimulation() {
     if (isRunning) return;
     let text = processTextArea ? processTextArea.value.trim() : "";
@@ -270,10 +272,13 @@
     try {
       setDiagnosticFlag("2: BOTÓN PRESIONADO", "Iniciando orquestación de 6 Agentes sobre problemática y objetivo...");
       isRunning = true;
-      if (btnRun) {
-        btnRun.disabled = true;
-        btnRun.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Ejecutando 6 Agentes IA+ITD...`;
-      }
+      
+      const runButtons = [btnRun, btnRunTop, btnHeaderRun].filter(Boolean);
+      runButtons.forEach(b => {
+        b.disabled = true;
+        b.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Ejecutando 6 Agentes IA+ITD...`;
+      });
+
       if (statusLabel) statusLabel.textContent = "Analizando brecha (As-Is vs. To-Be)...";
       resetPipelineUI();
       if (missingInfoSection) missingInfoSection.style.display = "none";
@@ -281,10 +286,11 @@
       await runExhaustiveAnalysis(text, objective);
 
       isRunning = false;
-      if (btnRun) {
-        btnRun.disabled = false;
-        btnRun.innerHTML = `<i class="fa-solid fa-brain"></i> Iniciar Análisis Exhaustivo de Agentes`;
-      }
+      
+      if (btnRun) { btnRun.disabled = false; btnRun.innerHTML = `<i class="fa-solid fa-brain"></i> Iniciar Análisis Exhaustivo de Agentes`; }
+      if (btnRunTop) { btnRunTop.disabled = false; btnRunTop.innerHTML = `<i class="fa-solid fa-rocket"></i> Iniciar Análisis Exhaustivo de Agentes`; }
+      if (btnHeaderRun) { btnHeaderRun.disabled = false; btnHeaderRun.innerHTML = `<i class="fa-solid fa-play"></i> Ejecutar 6 Agentes`; }
+
       if (statusLabel) statusLabel.textContent = "Análisis completado con éxito";
       if (btnOpenReport) btnOpenReport.style.display = "flex";
       if (trackerSection) trackerSection.style.display = "block";
@@ -303,14 +309,25 @@
       console.error("Error en ejecución de agentes:", err);
       setDiagnosticFlag("ERROR", "Ocurrió una excepción al procesar la simulación.");
       isRunning = false;
-      if (btnRun) {
-        btnRun.disabled = false;
-        btnRun.innerHTML = `<i class="fa-solid fa-brain"></i> Iniciar Análisis Exhaustivo de Agentes`;
-      }
+      
+      if (btnRun) { btnRun.disabled = false; btnRun.innerHTML = `<i class="fa-solid fa-brain"></i> Iniciar Análisis Exhaustivo de Agentes`; }
+      if (btnRunTop) { btnRunTop.disabled = false; btnRunTop.innerHTML = `<i class="fa-solid fa-rocket"></i> Iniciar Análisis Exhaustivo de Agentes`; }
+      if (btnHeaderRun) { btnHeaderRun.disabled = false; btnHeaderRun.innerHTML = `<i class="fa-solid fa-play"></i> Ejecutar 6 Agentes`; }
     }
   }
 
   if (btnRun) btnRun.addEventListener('click', triggerSimulation);
+  if (btnRunTop) btnRunTop.addEventListener('click', triggerSimulation);
+  if (btnHeaderRun) btnHeaderRun.addEventListener('click', triggerSimulation);
+
+  if (processTextArea) {
+    processTextArea.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault();
+        triggerSimulation();
+      }
+    });
+  }
 
   // Bind global window references for inline onclick attributes
   window.triggerSimulation = triggerSimulation;
@@ -834,16 +851,19 @@
     buildTrackerTasksState();
   }
 
-  // Render Missing Questions Panel
+  // Render Missing Questions Panel (Bulletproof Null Guards)
   function renderMissingQuestions(questions) {
-    missingQuestionsList.innerHTML = questions.map((q) => `
+    const listEl = document.getElementById('missing-questions-list');
+    const secEl = document.getElementById('missing-info-section');
+    if (!listEl) return;
+    listEl.innerHTML = questions.map((q) => `
       <div style="background: rgba(0,0,0,0.3); padding:0.75rem 1rem; border-radius:6px; border-left:3px solid var(--accent-amber);">
         <div style="font-size:0.8rem; color:var(--accent-amber); font-weight:bold;">[${q.agent}] ${q.pilar}:</div>
         <div style="font-size:0.9rem; margin-top:0.2rem;">${q.question}</div>
         <input type="text" class="form-input user-answer-input" data-agent="${q.agent}" data-question="${q.question}" style="margin-top:0.4rem; font-size:0.85rem; padding:0.5rem 0.8rem;" placeholder="Escribe aquí tu respuesta específica para este agente...">
       </div>
     `).join('');
-    missingInfoSection.style.display = "block";
+    if (secEl) secEl.style.display = "block";
   }
 
   // Build Interactive Milestone Tracker List for Client
