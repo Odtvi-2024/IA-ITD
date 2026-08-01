@@ -23,12 +23,12 @@
       </div>
 
       <ul class="nav-menu">
-        <li><a href="#" class="nav-item active"><i class="fa-solid fa-chart-line"></i> Dashboard General</a></li>
-        <li><a href="#simulator" class="nav-item"><i class="fa-solid fa-robot"></i> Análisis Diagnóstico</a></li>
-        <li><a href="#pilares" class="nav-item"><i class="fa-solid fa-cubes"></i> Dictámenes de Agentes</a></li>
-        <li><a href="#tracker-section" class="nav-item" id="nav-tracker-link"><i class="fa-solid fa-list-check"></i> Tablero de Avances</a></li>
-        <li><a href="#analytics-section" class="nav-item" id="nav-analytics-link"><i class="fa-solid fa-chart-pie"></i> Tendencias y Proyecciones</a></li>
-        <li><a href="#report-anchor" class="nav-item" id="nav-report-link"><i class="fa-solid fa-file-pdf"></i> Informe Final PDF</a></li>
+        <li><a href="#" class="nav-item active" id="nav-dash-link"><i class="fa-solid fa-chart-line"></i> Dashboard General</a></li>
+        <li><a href="#" class="nav-item" id="nav-sim-link"><i class="fa-solid fa-robot"></i> Análisis Diagnóstico</a></li>
+        <li><a href="#" class="nav-item" id="nav-pilares-link"><i class="fa-solid fa-cubes"></i> Dictámenes de Agentes</a></li>
+        <li><a href="#" class="nav-item" id="nav-tracker-link"><i class="fa-solid fa-list-check"></i> Tablero de Avances</a></li>
+        <li><a href="#" class="nav-item" id="nav-analytics-link"><i class="fa-solid fa-chart-pie"></i> Tendencias y Proyecciones</a></li>
+        <li><a href="#" class="nav-item" id="nav-report-link"><i class="fa-solid fa-file-pdf"></i> Informe Final PDF</a></li>
       </ul>
 
       <div class="system-status">
@@ -51,6 +51,10 @@
         </div>
 
         <div style="display:flex; gap: 1rem; align-items:center;">
+          <button class="btn-primary" id="btn-new-analysis" style="background: linear-gradient(135deg, var(--accent-emerald), var(--accent-cyan)); color:#000; font-weight:bold; font-size:0.85rem; padding:0.5rem 0.9rem;">
+            <i class="fa-solid fa-plus-circle"></i> Evaluar Nueva Empresa
+          </button>
+
           <button class="btn-primary" id="btn-open-report" style="background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue)); color:#fff; display:none;">
             <i class="fa-solid fa-file-pdf"></i> Ver Informe Final Exhaustivo
           </button>
@@ -61,324 +65,421 @@
           </div>
         </div>
       </header>
-
-      <!-- KPI Metric Cards Grid (5 Pillars) -->
-      <section class="kpi-grid">
-        <div class="kpi-card ops">
-          <span class="kpi-label"><i class="fa-solid fa-gears"></i> Operaciones & Procesos</span>
-          <div class="kpi-value" id="kpi-ops">--</div>
-          <span class="kpi-sub"><i class="fa-solid fa-clock"></i> Reducción de Tiempos</span>
+      <!-- PANTALLA 1: DEDICATED FULL-SCREEN DASHBOARD DE TENDENCIAS Y KPIs -->
+      <div id="screen-dashboard" style="display:block;">
+        <div style="margin-bottom:1.5rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+          <div>
+            <h2 style="font-size:1.6rem; color:#fff; font-family:'Outfit',sans-serif;"><i class="fa-solid fa-chart-line" style="color:var(--accent-purple);"></i> Dashboard de Analítica Avanzada, Tendencias y Proyecciones</h2>
+            <p style="font-size:0.85rem; color:var(--text-muted); margin-top:0.2rem;">Panel integral de control para evaluar el impacto estratégico, financiero, operativo y tecnológico del plan IA+ITD.</p>
+          </div>
+          <span class="agent-badge ops" style="font-size:0.85rem; padding:0.4rem 0.85rem;"><i class="fa-solid fa-chart-pie"></i> VISTA EJECUTIVA COMPLETA</span>
         </div>
 
-        <div class="kpi-card roi">
-          <span class="kpi-label"><i class="fa-solid fa-dollar-sign"></i> ROI & Valor Financiero</span>
-          <div class="kpi-value" id="kpi-roi">--</div>
-          <span class="kpi-sub"><i class="fa-solid fa-chart-line"></i> Retorno Proyectado</span>
+        <!-- 4 Top Executive Summary KPI Cards -->
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:1.25rem; margin-bottom:1.5rem;">
+          <div style="background:linear-gradient(135deg, rgba(16,185,129,0.15), rgba(6,182,212,0.15)); border:1px solid var(--accent-emerald); padding:1.25rem; border-radius:12px;">
+            <div style="font-size:0.75rem; color:var(--accent-emerald); text-transform:uppercase; font-weight:bold;"><i class="fa-solid fa-dollar-sign"></i> ROI Neto Proyectado (Año 1)</div>
+            <div id="dash-roi-val" style="font-size:2rem; font-weight:800; color:#fff; font-family:'Outfit',sans-serif; margin:0.3rem 0;">+340%</div>
+            <div style="font-size:0.75rem; color:var(--accent-cyan);">$32,400 USD Ahorro Neto Anual</div>
+          </div>
+
+          <div style="background:linear-gradient(135deg, rgba(6,182,212,0.15), rgba(139,92,246,0.15)); border:1px solid var(--accent-cyan); padding:1.25rem; border-radius:12px;">
+            <div style="font-size:0.75rem; color:var(--accent-cyan); text-transform:uppercase; font-weight:bold;"><i class="fa-solid fa-clock"></i> Horas Liberadas / Año</div>
+            <div id="dash-hours-val" style="font-size:2rem; font-weight:800; color:#fff; font-family:'Outfit',sans-serif; margin:0.3rem 0;">672 Hrs</div>
+            <div style="font-size:0.75rem; color:var(--text-muted);">Eq. a 84 Días de Trabajo Liberados</div>
+          </div>
+
+          <div style="background:linear-gradient(135deg, rgba(245,158,11,0.15), rgba(239,68,68,0.15)); border:1px solid var(--accent-amber); padding:1.25rem; border-radius:12px;">
+            <div style="font-size:0.75rem; color:var(--accent-amber); text-transform:uppercase; font-weight:bold;"><i class="fa-solid fa-bullseye"></i> Tasa de Eficiencia Operativa</div>
+            <div id="dash-efficiency-val" style="font-size:2rem; font-weight:800; color:#fff; font-family:'Outfit',sans-serif; margin:0.3rem 0;">90% Reducción</div>
+            <div style="font-size:0.75rem; color:var(--text-muted);">Eliminación de Digitación Manual</div>
+          </div>
+
+          <div style="background:linear-gradient(135deg, rgba(236,72,153,0.15), rgba(139,92,246,0.15)); border:1px solid var(--accent-rose); padding:1.25rem; border-radius:12px;">
+            <div style="font-size:0.75rem; color:var(--accent-rose); text-transform:uppercase; font-weight:bold;"><i class="fa-solid fa-award"></i> Madurez Digital de la Pyme</div>
+            <div id="dash-maturity-val" style="font-size:2rem; font-weight:800; color:#fff; font-family:'Outfit',sans-serif; margin:0.3rem 0;">88 / 100</div>
+            <div style="font-size:0.75rem; color:var(--accent-emerald);">Nivel Avanzado Certificado</div>
+          </div>
         </div>
 
-        <div class="kpi-card gov">
-          <span class="kpi-label"><i class="fa-solid fa-shield"></i> Gobernanza & Riesgo</span>
-          <div class="kpi-value" id="kpi-gov">--</div>
-          <span class="kpi-sub"><i class="fa-solid fa-check-double"></i> Nivel de Cumplimiento</span>
-        </div>
+        <!-- 6 Pillars Deep-Dive KPI Breakdown Grid -->
+        <div style="margin-bottom:1.5rem;">
+          <h3 style="font-size:1.1rem; color:var(--accent-cyan); margin-bottom:1rem;"><i class="fa-solid fa-cubes"></i> Matriz de KPIs por Pilar Estratégico</h3>
+          
+          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:1.25rem;">
+            <!-- Pillar 1 Ops -->
+            <div style="background:var(--bg-card); border:1px solid var(--pillar-ops); border-radius:10px; padding:1.25rem;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+                <h4 style="color:var(--pillar-ops); font-size:0.95rem;"><i class="fa-solid fa-gears"></i> 1. Operaciones & Procesos</h4>
+                <span class="agent-badge ops">Procesos</span>
+              </div>
+              <div style="display:flex; flex-direction:column; gap:0.5rem; font-size:0.85rem;">
+                <div style="display:flex; justify-content:space-between;"><span style="color:var(--text-muted);">Tasa de Error Actual:</span><span style="color:var(--accent-rose); font-weight:bold;">12% Errores</span></div>
+                <div style="display:flex; justify-content:space-between;"><span style="color:var(--text-muted);">Tasa de Error Objetivo:</span><span style="color:var(--accent-emerald); font-weight:bold;">< 0.1% OCR</span></div>
+                <div style="display:flex; justify-content:space-between;"><span style="color:var(--text-muted);">Tiempo por Lote (As-Is):</span><span>14 Horas</span></div>
+                <div style="display:flex; justify-content:space-between;"><span style="color:var(--text-muted);">Tiempo por Lote (To-Be):</span><span style="color:var(--accent-cyan); font-weight:bold;">1.4 Horas (1-Clic)</span></div>
+              </div>
+            </div>
 
-        <div class="kpi-card culture">
-          <span class="kpi-label"><i class="fa-solid fa-users"></i> Cultura & Talento</span>
-          <div class="kpi-value" id="kpi-culture">--</div>
-          <span class="kpi-sub"><i class="fa-solid fa-graduation-cap"></i> Preparación del Equipo</span>
-        </div>
+            <!-- Pillar 2 ROI -->
+            <div style="background:var(--bg-card); border:1px solid var(--pillar-roi); border-radius:10px; padding:1.25rem;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+                <h4 style="color:var(--pillar-roi); font-size:0.95rem;"><i class="fa-solid fa-chart-line"></i> 2. Finanzas & ROI</h4>
+                <span class="agent-badge roi">Finanzas</span>
+              </div>
+              <div style="display:flex; flex-direction:column; gap:0.5rem; font-size:0.85rem;">
+                <div style="display:flex; justify-content:space-between;"><span style="color:var(--text-muted);">CAPEX Implementación:</span><span>$11,000 USD</span></div>
+                <div style="display:flex; justify-content:space-between;"><span style="color:var(--text-muted);">OPEX Mensual Nube:</span><span>$450 USD/mes</span></div>
+                <div style="display:flex; justify-content:space-between;"><span style="color:var(--text-muted);">Periodo de Retorno (Payback):</span><span style="color:var(--accent-emerald); font-weight:bold;">2.4 Meses</span></div>
+                <div style="display:flex; justify-content:space-between;"><span style="color:var(--text-muted);">TIR Estimada a 3 Años:</span><span style="color:var(--accent-cyan); font-weight:bold;">145%</span></div>
+              </div>
+            </div>
 
-        <div class="kpi-card tech">
-          <span class="kpi-label"><i class="fa-solid fa-network-wired"></i> Tecnología & APIs</span>
-          <div class="kpi-value" id="kpi-tech">--</div>
-          <span class="kpi-sub"><i class="fa-solid fa-bolt"></i> Arquitectura de Integración</span>
-        </div>
-      </section>
+            <!-- Pillar 3 Gov -->
+            <div style="background:var(--bg-card); border:1px solid var(--pillar-gov); border-radius:10px; padding:1.25rem;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+                <h4 style="color:var(--pillar-gov); font-size:0.95rem;"><i class="fa-solid fa-shield"></i> 3. Gobernanza & Seguridad</h4>
+                <span class="agent-badge gov">Gobernanza</span>
+              </div>
+              <div style="display:flex; flex-direction:column; gap:0.5rem; font-size:0.85rem;">
+                <div style="display:flex; justify-content:space-between;"><span style="color:var(--text-muted);">Nivel de Riesgo Operativo:</span><span style="color:var(--accent-emerald); font-weight:bold;">Bajo (< 5%)</span></div>
+                <div style="display:flex; justify-content:space-between;"><span style="color:var(--text-muted);">Cumplimiento ISO 27001:</span><span style="color:var(--accent-cyan); font-weight:bold;">Matriz Aprobada</span></div>
+                <div style="display:flex; justify-content:space-between;"><span style="color:var(--text-muted);">Cifrado de Datos (PII):</span><span>AES-256 / SSL</span></div>
+                <div style="display:flex; justify-content:space-between;"><span style="color:var(--text-muted);">Trazabilidad de Firma NDA:</span><span style="color:var(--accent-emerald); font-weight:bold;">100% Auditado</span></div>
+              </div>
+            </div>
 
-      <!-- Interactive Multi-Agent Simulator Section -->
-      <section class="simulator-section" id="simulator">
-        
-        <!-- Input & Control Panel -->
-        <div class="card">
-          <div class="card-header">
-            <h3 class="card-title"><i class="fa-solid fa-file-signature" style="color: var(--accent-cyan);"></i> Diagnóstico Inicial de la Empresa</h3>
-            <span style="font-size: 0.8rem; color: var(--text-muted);" id="execution-status-label">Ingresa la problemática</span>
-          </div>
+            <!-- Pillar 4 Culture -->
+            <div style="background:var(--bg-card); border:1px solid var(--pillar-culture); border-radius:10px; padding:1.25rem;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+                <h4 style="color:var(--pillar-culture); font-size:0.95rem;"><i class="fa-solid fa-users"></i> 4. Cultura & Talento</h4>
+                <span class="agent-badge culture">Cultura</span>
+              </div>
+              <div style="display:flex; flex-direction:column; gap:0.5rem; font-size:0.85rem;">
+                <div style="display:flex; justify-content:space-between;"><span style="color:var(--text-muted);">Tasa de Adopción del Equipo:</span><span style="color:var(--accent-emerald); font-weight:bold;">100% Certificados</span></div>
+                <div style="display:flex; justify-content:space-between;"><span style="color:var(--text-muted);">Capacitación Co-Piloto IA:</span><span>12 Hrs/persona</span></div>
+                <div style="display:flex; justify-content:space-between;"><span style="color:var(--text-muted);">Resistencia al Cambio:</span><span style="color:var(--accent-emerald); font-weight:bold;">Mitigada (Taller)</span></div>
+                <div style="display:flex; justify-content:space-between;"><span style="color:var(--text-muted);">Satisfacción Laboral (eNPS):</span><span style="color:var(--accent-cyan); font-weight:bold;">+42 Puntos</span></div>
+              </div>
+            </div>
 
-          <div class="form-group">
-            <label class="form-label">Seleccionar Escenario o Ingresar Diagnóstico Real:</label>
-            <select class="form-select" id="preset-scenario">
-              <option value="custom" selected>-- Pegar Diagnóstico Real de la Empresa --</option>
-              <option value="1">1. Aprobación y Pago de Facturas en SAP / Excel (Finanzas)</option>
-              <option value="2">2. Onboarding de Nuevos Empleados y Accesos IT (RRHH / Operaciones)</option>
-              <option value="3">3. Triaje y Resolución de Tickets de Soporte Técnico (Mesa de Ayuda)</option>
-            </select>
-          </div>
+            <!-- Pillar 5 Tech -->
+            <div style="background:var(--bg-card); border:1px solid var(--pillar-tech); border-radius:10px; padding:1.25rem;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+                <h4 style="color:var(--pillar-tech); font-size:0.95rem;"><i class="fa-solid fa-network-wired"></i> 5. Tecnología & APIs</h4>
+                <span class="agent-badge tech">Tecnología</span>
+              </div>
+              <div style="display:flex; flex-direction:column; gap:0.5rem; font-size:0.85rem;">
+                <div style="display:flex; justify-content:space-between;"><span style="color:var(--text-muted);">Disponibilidad SLA:</span><span style="color:var(--accent-emerald); font-weight:bold;">99.9% Uptime</span></div>
+                <div style="display:flex; justify-content:space-between;"><span style="color:var(--text-muted);">Conectores API Activos:</span><span>4 Middleware</span></div>
+                <div style="display:flex; justify-content:space-between;"><span style="color:var(--text-muted);">Tiempo de Inferencia IA:</span><span style="color:var(--accent-cyan); font-weight:bold;">< 250 ms</span></div>
+                <div style="display:flex; justify-content:space-between;"><span style="color:var(--text-muted);">Arquitectura Nube:</span><span>Microservicios</span></div>
+              </div>
+            </div>
 
-          <div class="form-group">
-            <label class="form-label">1. Problemática / Situación Actual de la Empresa (As-Is):</label>
-            <textarea class="form-textarea" id="process-description" style="min-height:110px;" placeholder="Describe los problemas, procesos manuales, cuellos de botella, equipo y situación actual de la empresa..."></textarea>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">2. Objetivo / Meta Deseada de la Empresa (To-Be):</label>
-            <textarea class="form-textarea" id="company-objective" style="min-height:85px;" placeholder="Describe qué busca lograr la empresa (ej: agregar mayor valor a nuestros servicios de diseño, duplicar facturación sin aumentar nómina, reducir tiempos a la mitad, etc.)..."></textarea>
-          </div>
-
-          <button class="btn-primary" id="btn-run-simulation">
-            <i class="fa-solid fa-brain"></i> Iniciar Análisis Exhaustivo de Agentes
-          </button>
-        </div>
-
-        <!-- Live Pipeline & Terminal Window -->
-        <div class="card">
-          <div class="card-header">
-            <h3 class="card-title"><i class="fa-solid fa-terminal" style="color: var(--accent-emerald);"></i> Consola de Pensamiento de los Agentes IA+ITD</h3>
-            <button id="btn-clear-terminal" style="background:transparent; border:none; color:var(--text-muted); cursor:pointer; font-size:0.8rem;"><i class="fa-solid fa-eraser"></i> Limpiar</button>
-          </div>
-
-          <!-- Step Pipeline visualizer -->
-          <div class="pipeline-status">
-            <div class="pipeline-step waiting" id="step-ops">1. Ops</div>
-            <div class="pipeline-step waiting" id="step-roi">2. ROI</div>
-            <div class="pipeline-step waiting" id="step-gov">3. Gov</div>
-            <div class="pipeline-step waiting" id="step-culture">4. Cult</div>
-            <div class="pipeline-step waiting" id="step-tech">5. Tech</div>
-            <div class="pipeline-step waiting" id="step-agile">6. Agile</div>
-          </div>
-
-          <!-- Console Terminal -->
-          <div class="terminal-window" id="terminal-output">
-            <div class="log-entry">
-              <span class="log-time">[00:00:00]</span>
-              <span style="color: var(--text-muted);">Bienvenido a IA+ITD. Ingresa el diagnóstico y presiona 'Iniciar Análisis Exhaustivo' para evaluar tu empresa.</span>
+            <!-- Pillar 6 Agile -->
+            <div style="background:var(--bg-card); border:1px solid var(--pillar-agile); border-radius:10px; padding:1.25rem;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+                <h4 style="color:var(--pillar-agile); font-size:0.95rem;"><i class="fa-solid fa-bolt"></i> 6. Metodologías Ágiles</h4>
+                <span class="agent-badge agile">Ágile</span>
+              </div>
+              <div style="display:flex; flex-direction:column; gap:0.5rem; font-size:0.85rem;">
+                <div style="display:flex; justify-content:space-between;"><span style="color:var(--text-muted);">Sprints Planificados:</span><span>3 Sprints (6 Sem)</span></div>
+                <div style="display:flex; justify-content:space-between;"><span style="color:var(--text-muted);">Velocidad de Entregables:</span><span style="color:var(--accent-rose); font-weight:bold;">24 Puntos/Sprint</span></div>
+                <div style="display:flex; justify-content:space-between;"><span style="color:var(--text-muted);">Lead Time Quick Win MVP:</span><span style="color:var(--accent-emerald); font-weight:bold;">14 Días Habiles</span></div>
+                <div style="display:flex; justify-content:space-between;"><span style="color:var(--text-muted);">Cadencia de Demo Cliente:</span><span>Quincenal</span></div>
+              </div>
             </div>
           </div>
         </div>
 
-      </section>
+        <!-- Trend Charts Container & Scale Simulator -->
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:1.25rem;">
+          <!-- Chart 1: Cumulative Financial Savings Trend -->
+          <div style="background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:10px; padding:1.25rem;">
+            <h4 style="font-size:0.95rem; color:var(--accent-cyan); margin-bottom:0.75rem;"><i class="fa-solid fa-chart-area"></i> Curva de Ahorro Financiero Acumulado por Semana ($)</h4>
+            <div style="height:140px; display:flex; align-items:flex-end; gap:0.5rem; padding-top:1rem; border-bottom:1px solid var(--border-color);">
+              <div style="flex:1; background:rgba(6,182,212,0.2); border-top:2px solid var(--accent-cyan); height:15%; position:relative;" title="Sem 1-2: $2,000"><span style="position:absolute; top:-18px; font-size:0.65rem; color:var(--text-muted); width:100%; text-align:center;">S1-2</span></div>
+              <div style="flex:1; background:rgba(6,182,212,0.35); border-top:2px solid var(--accent-cyan); height:35%; position:relative;" title="Sem 3-4: $6,500"><span style="position:absolute; top:-18px; font-size:0.65rem; color:var(--text-muted); width:100%; text-align:center;">S3-4</span></div>
+              <div style="flex:1; background:rgba(6,182,212,0.55); border-top:2px solid var(--accent-cyan); height:60%; position:relative;" title="Sem 5-6: $14,000"><span style="position:absolute; top:-18px; font-size:0.65rem; color:var(--text-muted); width:100%; text-align:center;">S5-6</span></div>
+              <div style="flex:1; background:rgba(6,182,212,0.75); border-top:2px solid var(--accent-cyan); height:82%; position:relative;" title="Sem 7-8: $22,000"><span style="position:absolute; top:-18px; font-size:0.65rem; color:var(--text-muted); width:100%; text-align:center;">S7-8</span></div>
+              <div style="flex:1; background:rgba(6,182,212,0.95); border-top:2px solid var(--accent-emerald); height:100%; position:relative;" title="Sem 9-12: $32,400"><span style="position:absolute; top:-18px; font-size:0.65rem; color:var(--accent-emerald); font-weight:bold; width:100%; text-align:center;">S9-12</span></div>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-muted); margin-top:0.5rem;">
+              <span>Fase Inicial</span>
+              <span>MVP Operativo</span>
+              <span>100% Escalamiento</span>
+            </div>
+          </div>
 
-      <!-- Questions & Clarifications Alert Box -->
-      <section id="missing-info-section" style="display:none;">
-        <div class="card" style="border: 1px solid var(--accent-amber); background: rgba(245, 158, 11, 0.05);">
-          <div class="card-header" style="border-bottom-color: rgba(245, 158, 11, 0.2);">
-            <h3 class="card-title" style="color: var(--accent-amber);"><i class="fa-solid fa-circle-question"></i> Información Faltante Requerida por los Agentes IA+ITD</h3>
-            <span style="font-size:0.8rem; color: var(--accent-amber);">Responde para refinar y re-evaluar el informe</span>
+          <!-- Chart 2: Interactive Growth & Scale Simulator -->
+          <div style="background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:10px; padding:1.25rem;">
+            <h4 style="font-size:0.95rem; color:var(--accent-emerald); margin-bottom:0.75rem;"><i class="fa-solid fa-sliders"></i> Simulador Interactivo de Escala de Negocio</h4>
+            <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:1rem;">Mueve el control deslizable para proyectar el ROI y la capacidad operativa al aumentar el volumen:</p>
+            
+            <div style="margin-bottom:1rem;">
+              <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:0.3rem;">
+                <span>Volumen / Facturación Simulada:</span>
+                <span id="slider-volume-val" style="font-weight:bold; color:var(--accent-emerald);">$25,000,000 CLP / mes</span>
+              </div>
+              <input type="range" id="scale-slider" min="10000000" max="100000000" step="5000000" value="25000000" style="width:100%; cursor:pointer;">
+            </div>
+
+            <div style="background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.2); padding:0.75rem; border-radius:6px; font-size:0.85rem;">
+              <div style="display:flex; justify-content:space-between; margin-bottom:0.3rem;">
+                <span style="color:var(--text-muted);">Ahorro Proyectado Anual:</span>
+                <span id="sim-annual-savings" style="font-weight:bold; color:#fff;">$12,500,000 CLP</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; margin-bottom:0.3rem;">
+                <span style="color:var(--text-muted);">Horas Liberadas al Mes:</span>
+                <span id="sim-hours-saved" style="font-weight:bold; color:var(--accent-cyan);">140 Horas / mes</span>
+              </div>
+              <div style="display:flex; justify-content:space-between;">
+                <span style="color:var(--text-muted);">Capacidad de Clientes Nuevos:</span>
+                <span id="sim-capacity-boost" style="font-weight:bold; color:var(--accent-amber);">+35% Capacidad</span>
+              </div>
+            </div>
           </div>
-          <div id="missing-questions-list" style="display:flex; flex-direction:column; gap:0.75rem;">
-            <!-- Questions injected dynamically -->
+        </div>
+
+      </div>
+
+      <!-- PANTALLA 2: ANÁLISIS DIAGNÓSTICO & SIMULACIÓN -->
+      <div id="screen-diagnostic" style="display:none;">
+
+        <!-- KPI Metric Cards Grid (5 Pillars) -->
+        <section class="kpi-grid">
+          <div class="kpi-card ops">
+            <span class="kpi-label"><i class="fa-solid fa-gears"></i> Operaciones & Procesos</span>
+            <div class="kpi-value" id="kpi-ops">--</div>
+            <span class="kpi-sub"><i class="fa-solid fa-clock"></i> Reducción de Tiempos</span>
           </div>
-          <div style="margin-top: 1rem; display:flex; justify-content:flex-end;">
-            <button class="btn-primary" id="btn-submit-answers" style="background: linear-gradient(135deg, var(--accent-amber), var(--accent-blue)); color:#000;">
-              <i class="fa-solid fa-arrows-rotate"></i> Re-evaluar Análisis con la Nueva Información
+
+          <div class="kpi-card roi">
+            <span class="kpi-label"><i class="fa-solid fa-dollar-sign"></i> ROI & Valor Financiero</span>
+            <div class="kpi-value" id="kpi-roi">--</div>
+            <span class="kpi-sub"><i class="fa-solid fa-chart-line"></i> Retorno Proyectado</span>
+          </div>
+
+          <div class="kpi-card gov">
+            <span class="kpi-label"><i class="fa-solid fa-shield"></i> Gobernanza & Riesgo</span>
+            <div class="kpi-value" id="kpi-gov">--</div>
+            <span class="kpi-sub"><i class="fa-solid fa-check-double"></i> Nivel de Cumplimiento</span>
+          </div>
+
+          <div class="kpi-card culture">
+            <span class="kpi-label"><i class="fa-solid fa-users"></i> Cultura & Talento</span>
+            <div class="kpi-value" id="kpi-culture">--</div>
+            <span class="kpi-sub"><i class="fa-solid fa-graduation-cap"></i> Preparación del Equipo</span>
+          </div>
+
+          <div class="kpi-card tech">
+            <span class="kpi-label"><i class="fa-solid fa-network-wired"></i> Tecnología & APIs</span>
+            <div class="kpi-value" id="kpi-tech">--</div>
+            <span class="kpi-sub"><i class="fa-solid fa-bolt"></i> Arquitectura de Integración</span>
+          </div>
+        </section>
+
+        <!-- Interactive Multi-Agent Simulator Section -->
+        <section class="simulator-section" id="simulator">
+          <!-- Input & Control Panel -->
+          <div class="card">
+            <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <h3 class="card-title"><i class="fa-solid fa-file-signature" style="color: var(--accent-cyan);"></i> Diagnóstico Inicial de la Empresa</h3>
+                <span style="font-size: 0.8rem; color: var(--text-muted);" id="execution-status-label">Ingresa la problemática</span>
+              </div>
+              <button class="btn-secondary" id="btn-reset-form" style="font-size:0.75rem; padding: 0.35rem 0.75rem;">
+                <i class="fa-solid fa-rotate-left"></i> Limpiar para Otra Empresa
+              </button>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Seleccionar Escenario o Ingresar Diagnóstico Real:</label>
+              <select class="form-select" id="preset-scenario">
+                <option value="custom" selected>-- Pegar Diagnóstico Real de la Empresa --</option>
+                <option value="1">1. Aprobación y Pago de Facturas en SAP / Excel (Finanzas)</option>
+                <option value="2">2. Onboarding de Nuevos Empleados y Accesos IT (RRHH / Operaciones)</option>
+                <option value="3">3. Triaje y Resolución de Tickets de Soporte Técnico (Mesa de Ayuda)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">1. Problemática / Situación Actual de la Empresa (As-Is):</label>
+              <textarea class="form-textarea" id="process-description" style="min-height:110px;" placeholder="Describe los problemas, procesos manuales, cuellos de botella, equipo y situación actual de la empresa..."></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">2. Objetivo / Meta Deseada de la Empresa (To-Be):</label>
+              <textarea class="form-textarea" id="company-objective" style="min-height:85px;" placeholder="Describe qué busca lograr la empresa (ej: agregar mayor valor a nuestros servicios de diseño, duplicar facturación sin aumentar nómina, reducir tiempos a la mitad, etc.)..."></textarea>
+            </div>
+
+            <button class="btn-primary" id="btn-run-simulation">
+              <i class="fa-solid fa-brain"></i> Iniciar Análisis Exhaustivo de Agentes
             </button>
           </div>
-        </div>
-      </section>
 
-      <!-- Interactive 5 Agent Cards Section -->
-      <section id="pilares">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1rem;">
-          <div>
-            <h3 style="font-size: 1.3rem;"><i class="fa-solid fa-users-gears"></i> Dictámenes del Escuadrón de Agentes IA+ITD</h3>
-            <p style="font-size: 0.85rem; color: var(--text-muted);">Haz clic sobre cualquier ficha para examinar el análisis exhaustivo, preguntas y orientaciones de cada agente.</p>
-          </div>
-          <span class="agent-badge ops" style="font-size:0.8rem; padding:0.4rem 0.8rem;">Haz Clic en una Ficha</span>
-        </div>
-        
-        <div class="pillar-grid">
-          
-          <!-- Agent 1 Card -->
-          <div class="agent-profile-card clickable" data-agent="ops">
-            <div class="agent-header">
-              <span class="agent-badge ops">Operaciones</span>
-              <i class="fa-solid fa-gears" style="color: var(--pillar-ops); font-size: 1.2rem;"></i>
-            </div>
-            <h4>ProcessOptimizer_Agent</h4>
-            <p style="font-size: 0.85rem; color: var(--text-muted);">Análisis de Flujo As-Is / To-Be y Reducción de Tiempos.</p>
-            <div class="card-status-label" id="status-card-ops">Estado: Pendiente</div>
-            <div class="click-hint"><i class="fa-solid fa-hand-pointer"></i> Ver dictamen exhaustivo</div>
-          </div>
-
-          <!-- Agent 2 Card -->
-          <div class="agent-profile-card clickable" data-agent="roi">
-            <div class="agent-header">
-              <span class="agent-badge roi">ROI & Valor</span>
-              <i class="fa-solid fa-chart-pie" style="color: var(--pillar-roi); font-size: 1.2rem;"></i>
-            </div>
-            <h4>ROI_Guardian_Agent</h4>
-            <p style="font-size: 0.85rem; color: var(--text-muted);">Modelo Financiero de Ahorro, CAPEX/OPEX y Payback.</p>
-            <div class="card-status-label" id="status-card-roi">Estado: Pendiente</div>
-            <div class="click-hint"><i class="fa-solid fa-hand-pointer"></i> Ver dictamen exhaustivo</div>
-          </div>
-
-          <!-- Agent 3 Card -->
-          <div class="agent-profile-card clickable" data-agent="gov">
-            <div class="agent-header">
-              <span class="agent-badge gov">Gobernanza</span>
-              <i class="fa-solid fa-user-shield" style="color: var(--pillar-gov); font-size: 1.2rem;"></i>
-            </div>
-            <h4>Governance_Compliance_Agent</h4>
-            <p style="font-size: 0.85rem; color: var(--text-muted);">Matriz de Riesgos, Protección PII e ISO 27001.</p>
-            <div class="card-status-label" id="status-card-gov">Estado: Pendiente</div>
-            <div class="click-hint"><i class="fa-solid fa-hand-pointer"></i> Ver dictamen exhaustivo</div>
-          </div>
-
-          <!-- Agent 4 Card -->
-          <div class="agent-profile-card clickable" data-agent="culture">
-            <div class="agent-header">
-              <span class="agent-badge culture">Cultura</span>
-              <i class="fa-solid fa-people-group" style="color: var(--pillar-culture); font-size: 1.2rem;"></i>
-            </div>
-            <h4>People_Culture_Agent</h4>
-            <p style="font-size: 0.85rem; color: var(--text-muted);">Gestión del Cambio, Resistencia y Capacitaciones.</p>
-            <div class="card-status-label" id="status-card-culture">Estado: Pendiente</div>
-            <div class="click-hint"><i class="fa-solid fa-hand-pointer"></i> Ver dictamen exhaustivo</div>
-          </div>
-
-          <!-- Agent 5 Card -->
-          <div class="agent-profile-card clickable" data-agent="tech">
-            <div class="agent-header">
-              <span class="agent-badge tech">Tecnología</span>
-              <i class="fa-solid fa-code" style="color: var(--pillar-tech); font-size: 1.2rem;"></i>
-            </div>
-            <h4>Tech_Connector_Agent</h4>
-            <p style="font-size: 0.85rem; color: var(--text-muted);">Arquitectura de APIs, Middleware y Conectores.</p>
-            <div class="card-status-label" id="status-card-tech">Estado: Pendiente</div>
-            <div class="click-hint"><i class="fa-solid fa-hand-pointer"></i> Ver dictamen exhaustivo</div>
-          </div>
-
-          <!-- Agent 6 Card -->
-          <div class="agent-profile-card clickable" data-agent="agile">
-            <div class="agent-header">
-              <span class="agent-badge agile">Agile / Sprints</span>
-              <i class="fa-solid fa-bolt-lightning" style="color: var(--pillar-agile); font-size: 1.2rem;"></i>
-            </div>
-            <h4>Agile_Scrum_Agent</h4>
-            <p style="font-size: 0.85rem; color: var(--text-muted);">Definición de MVP, Sprints de 2 Semanas y User Stories.</p>
-            <div class="card-status-label" id="status-card-agile">Estado: Pendiente</div>
-            <div class="click-hint"><i class="fa-solid fa-hand-pointer"></i> Ver dictamen exhaustivo</div>
-          </div>
-
-        </div>
-      </section>
-
-      <!-- TABLERO DE SEGUIMIENTO DE AVANCES -->
-      <section id="tracker-section" style="display:none; margin-top:1rem;">
-        <div class="card">
-          <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
-            <div>
-              <h3 class="card-title" style="color:var(--accent-emerald);"><i class="fa-solid fa-list-check"></i> Tablero de Seguimiento de Avance IA+ITD</h3>
-              <p style="font-size:0.85rem; color:var(--text-muted); margin-top:0.25rem;">El cliente puede marcar los avances de cada etapa, actualizar estados y ver el % global completado.</p>
-            </div>
-
-            <!-- Global Progress Gauge -->
-            <div style="text-align:right;">
-              <div style="font-size:0.8rem; color:var(--text-muted);">Índice de Avance Real:</div>
-              <div id="tracker-progress-percentage" style="font-size:1.8rem; font-family:'Outfit',sans-serif; font-weight:700; color:var(--accent-emerald);">0%</div>
-            </div>
-          </div>
-
-          <!-- Progress Bar -->
-          <div style="background:rgba(255,255,255,0.05); height:12px; border-radius:6px; overflow:hidden; border:1px solid var(--border-color);">
-            <div id="tracker-progress-bar" style="width:0%; height:100%; background:linear-gradient(90deg, var(--accent-cyan), var(--accent-emerald)); transition:width 0.4s ease;"></div>
-          </div>
-
-          <!-- Interactive Milestone Tracker List -->
-          <div id="tracker-milestones-list" style="display:flex; flex-direction:column; gap:1rem; margin-top:1rem;">
-            <!-- Dynamically populated -->
-          </div>
-        </div>
-      </section>
-
-      <!-- DASHBOARD DE TENDENCIAS Y PROYECCIONES -->
-      <section id="analytics-section" style="display:none; margin-top:1.5rem;">
-        <div class="card" style="border: 1px solid var(--accent-purple);">
-          <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
-            <div>
-              <h3 class="card-title" style="color:var(--accent-purple);"><i class="fa-solid fa-chart-line"></i> Dashboard de Tendencias & Proyecciones de Transformación Digital</h3>
-              <p style="font-size:0.85rem; color:var(--text-muted); margin-top:0.25rem;">Visualiza las proyecciones financieras, curva de adopción del equipo y simulador de escala de la plataforma IA+ITD.</p>
-            </div>
-            <span class="agent-badge culture" style="font-size:0.8rem; padding:0.4rem 0.8rem;">Analítica Avanzada</span>
-          </div>
-
-          <!-- Trend KPI Grid -->
-          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:1rem; margin-top:1rem;">
-            <div style="background:rgba(139,92,246,0.1); border:1px solid var(--pillar-culture); padding:1rem; border-radius:10px;">
-              <div style="font-size:0.75rem; color:var(--pillar-culture); text-transform:uppercase; font-weight:bold;">Ahorro Acumulado (12 Sem)</div>
-              <div id="proj-savings-total" style="font-size:1.8rem; font-weight:800; color:#fff; font-family:'Outfit',sans-serif; margin:0.3rem 0;">$32,400 USD</div>
-              <div style="font-size:0.75rem; color:var(--accent-emerald);"><i class="fa-solid fa-arrow-trend-up"></i> Proyección en alza constante</div>
-            </div>
-
-            <div style="background:rgba(6,182,212,0.1); border:1px solid var(--pillar-ops); padding:1rem; border-radius:10px;">
-              <div style="font-size:0.75rem; color:var(--pillar-ops); text-transform:uppercase; font-weight:bold;">Reducción Tasa de Error</div>
-              <div id="proj-error-reduction" style="font-size:1.8rem; font-weight:800; color:#fff; font-family:'Outfit',sans-serif; margin:0.3rem 0;">12% ➔ 0.1%</div>
-              <div style="font-size:0.75rem; color:var(--accent-cyan);"><i class="fa-solid fa-shield-halved"></i> Calidad Garantizada OCR</div>
-            </div>
-
-            <div style="background:rgba(16,185,129,0.1); border:1px solid var(--pillar-roi); padding:1rem; border-radius:10px;">
-              <div style="font-size:0.75rem; color:var(--pillar-roi); text-transform:uppercase; font-weight:bold;">Capacitación & Adopción</div>
-              <div id="proj-team-adoption" style="font-size:1.8rem; font-weight:800; color:#fff; font-family:'Outfit',sans-serif; margin:0.3rem 0;">100% Equipo</div>
-              <div style="font-size:0.75rem; color:var(--accent-emerald);"><i class="fa-solid fa-user-check"></i> Co-Piloto IA Certificado</div>
-            </div>
-
-            <div style="background:rgba(236,72,153,0.1); border:1px solid var(--pillar-agile); padding:1rem; border-radius:10px;">
-              <div style="font-size:0.75rem; color:var(--pillar-agile); text-transform:uppercase; font-weight:bold;">Velocidad de Sprints</div>
-              <div id="proj-sprint-velocity" style="font-size:1.8rem; font-weight:800; color:#fff; font-family:'Outfit',sans-serif; margin:0.3rem 0;">24 Puntos/Sprint</div>
-              <div style="font-size:0.75rem; color:var(--accent-rose);"><i class="fa-solid fa-bolt"></i> Cadencia Quincenal</div>
-            </div>
-          </div>
-
-          <!-- Trend Charts Container -->
-          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:1.25rem; margin-top:1.5rem;">
-            <!-- Chart 1: Cumulative Financial Savings Trend -->
-            <div style="background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:10px; padding:1.25rem;">
-              <h4 style="font-size:0.95rem; color:var(--accent-cyan); margin-bottom:0.75rem;"><i class="fa-solid fa-chart-area"></i> Proyección de Ahorro Acumulado por Semana ($)</h4>
-              <div style="height:140px; display:flex; align-items:flex-end; gap:0.5rem; padding-top:1rem; border-bottom:1px solid var(--border-color);">
-                <div style="flex:1; background:rgba(6,182,212,0.2); border-top:2px solid var(--accent-cyan); height:15%; position:relative;" title="Sem 1-2: $2,000"><span style="position:absolute; top:-18px; font-size:0.65rem; color:var(--text-muted); width:100%; text-align:center;">S1-2</span></div>
-                <div style="flex:1; background:rgba(6,182,212,0.35); border-top:2px solid var(--accent-cyan); height:35%; position:relative;" title="Sem 3-4: $6,500"><span style="position:absolute; top:-18px; font-size:0.65rem; color:var(--text-muted); width:100%; text-align:center;">S3-4</span></div>
-                <div style="flex:1; background:rgba(6,182,212,0.55); border-top:2px solid var(--accent-cyan); height:60%; position:relative;" title="Sem 5-6: $14,000"><span style="position:absolute; top:-18px; font-size:0.65rem; color:var(--text-muted); width:100%; text-align:center;">S5-6</span></div>
-                <div style="flex:1; background:rgba(6,182,212,0.75); border-top:2px solid var(--accent-cyan); height:82%; position:relative;" title="Sem 7-8: $22,000"><span style="position:absolute; top:-18px; font-size:0.65rem; color:var(--text-muted); width:100%; text-align:center;">S7-8</span></div>
-                <div style="flex:1; background:rgba(6,182,212,0.95); border-top:2px solid var(--accent-emerald); height:100%; position:relative;" title="Sem 9-12: $32,400"><span style="position:absolute; top:-18px; font-size:0.65rem; color:var(--accent-emerald); font-weight:bold; width:100%; text-align:center;">S9-12</span></div>
-              </div>
-              <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-muted); margin-top:0.5rem;">
-                <span>Fase Inicial</span>
-                <span>MVP Operativo</span>
-                <span>100% Escalamiento</span>
+          <!-- Live Pipeline & Terminal Window -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title"><i class="fa-solid fa-terminal" style="color: var(--accent-emerald);"></i> Consola de Pensamiento de los Agentes IA+ITD</h3>
+              <div style="display:flex; gap: 0.5rem;">
+                <button class="btn-secondary" id="btn-clear-terminal" style="font-size:0.75rem; padding: 0.3rem 0.6rem;">Limpiar Consola</button>
               </div>
             </div>
 
-            <!-- Chart 2: Interactive Growth & Scale Simulator -->
-            <div style="background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:10px; padding:1.25rem;">
-              <h4 style="font-size:0.95rem; color:var(--accent-emerald); margin-bottom:0.75rem;"><i class="fa-solid fa-sliders"></i> Simulador de Escala de Negocio con IA+ITD</h4>
-              <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:1rem;">Mueve el control deslizable para simular el impacto en tu facturación o volumen al escalar con IA:</p>
-              
-              <div style="margin-bottom:1rem;">
-                <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:0.3rem;">
-                  <span>Volumen / Facturación Simulada:</span>
-                  <span id="slider-volume-val" style="font-weight:bold; color:var(--accent-emerald);">$25,000,000 CLP / mes</span>
-                </div>
-                <input type="range" id="scale-slider" min="10000000" max="100000000" step="5000000" value="25000000" style="width:100%; cursor:pointer;">
-              </div>
+            <!-- Terminal Pipeline Status Bar -->
+            <div class="pipeline-bar">
+              <div class="pipeline-step waiting" id="step-ops">1. Operaciones</div>
+              <div class="pipeline-step waiting" id="step-roi">2. ROI</div>
+              <div class="pipeline-step waiting" id="step-gov">3. Gobernanza</div>
+              <div class="pipeline-step waiting" id="step-culture">4. Cultura</div>
+              <div class="pipeline-step waiting" id="step-tech">5. Tecnología</div>
+              <div class="pipeline-step waiting" id="step-agile">6. Agile</div>
+            </div>
 
-              <div style="background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.2); padding:0.75rem; border-radius:6px; font-size:0.85rem;">
-                <div style="display:flex; justify-content:space-between; margin-bottom:0.3rem;">
-                  <span style="color:var(--text-muted);">Ahorro Proyectado Anual:</span>
-                  <span id="sim-annual-savings" style="font-weight:bold; color:#fff;">$12,500,000 CLP</span>
-                </div>
-                <div style="display:flex; justify-content:space-between; margin-bottom:0.3rem;">
-                  <span style="color:var(--text-muted);">Horas Liberadas al Mes:</span>
-                  <span id="sim-hours-saved" style="font-weight:bold; color:var(--accent-cyan);">140 Horas / mes</span>
-                </div>
-                <div style="display:flex; justify-content:space-between;">
-                  <span style="color:var(--text-muted);">Capacidad de Clientes Nuevos:</span>
-                  <span id="sim-capacity-boost" style="font-weight:bold; color:var(--accent-amber);">+35% Capacidad</span>
-                </div>
+            <div class="terminal-container" id="terminal-output">
+              <div class="log-entry">
+                <span class="log-time">[SISTEMA IA+ITD]</span>
+                <span style="color: var(--text-muted);">Listo para recibir el diagnóstico situacional de la empresa y ejecutar la simulación de 6 agentes.</span>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+
+        <!-- PANEL DE INFORMACIÓN FALTANTE (PREGUNTAS DINÁMICAS DEDUCIDAS) -->
+        <section id="missing-info-section" style="display:none; margin-top: 1rem;">
+          <div class="card" style="border: 1px solid var(--accent-amber);">
+            <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <h3 class="card-title" style="color: var(--accent-amber);"><i class="fa-solid fa-triangle-exclamation"></i> Información Faltante Requerida por los Agentes IA+ITD</h3>
+                <p style="font-size:0.85rem; color: var(--text-muted); margin-top: 0.25rem;">Basado en el análisis de tu diagnóstico, los agentes han identificado que falta precisar los siguientes 6 puntos clave para afinar los números finales:</p>
+              </div>
+              <span class="agent-badge gov" style="font-size:0.8rem; padding: 0.3rem 0.6rem;">6 Preguntas Deducidas</span>
+            </div>
+
+            <div id="missing-questions-list" style="display:flex; flex-direction:column; gap:1.25rem; margin-top:1rem;">
+              <!-- Dynamically populated -->
+            </div>
+
+            <div style="margin-top: 1.5rem; text-align:right;">
+              <button class="btn-primary" id="btn-submit-answers" style="background: linear-gradient(135deg, var(--accent-amber), var(--accent-rose)); color: #fff;">
+                <i class="fa-solid fa-arrows-rotate"></i> Re-evaluar Análisis con la Nueva Información
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- DETALLE EXHAUSTIVO DE CADA AGENTE -->
+        <section style="margin-top: 2rem;" id="pilares">
+          <h3 style="font-size: 1.2rem; margin-bottom: 1rem; color: var(--accent-cyan);">
+            <i class="fa-solid fa-cubes"></i> Agentes Activos y Dictámenes Exhaustivos por Pilar
+          </h3>
+
+          <div class="pillar-grid">
+            <!-- Agent 1 Card -->
+            <div class="agent-profile-card clickable" data-agent="ops">
+              <div class="agent-header">
+                <span class="agent-badge ops">Operaciones</span>
+                <i class="fa-solid fa-gears" style="color: var(--pillar-ops); font-size: 1.2rem;"></i>
+              </div>
+              <h4>ProcessOptimizer_Agent</h4>
+              <p style="font-size: 0.85rem; color: var(--text-muted);">Análisis de mapa de procesos, tiempos de ciclo y cuellos de botella.</p>
+              <div class="card-status-label" id="status-card-ops">Estado: Pendiente</div>
+              <div class="click-hint"><i class="fa-solid fa-hand-pointer"></i> Ver dictamen exhaustivo</div>
+            </div>
+
+            <!-- Agent 2 Card -->
+            <div class="agent-profile-card clickable" data-agent="roi">
+              <div class="agent-header">
+                <span class="agent-badge roi">ROI & Negocio</span>
+                <i class="fa-solid fa-chart-line" style="color: var(--pillar-roi); font-size: 1.2rem;"></i>
+              </div>
+              <h4>ROI_Guardian_Agent</h4>
+              <p style="font-size: 0.85rem; color: var(--text-muted);">Cálculo de CAPEX, OPEX, Payback y Proyección de Ahorro Anual.</p>
+              <div class="card-status-label" id="status-card-roi">Estado: Pendiente</div>
+              <div class="click-hint"><i class="fa-solid fa-hand-pointer"></i> Ver dictamen exhaustivo</div>
+            </div>
+
+            <!-- Agent 3 Card -->
+            <div class="agent-profile-card clickable" data-agent="gov">
+              <div class="agent-header">
+                <span class="agent-badge gov">Gobernanza & IP</span>
+                <i class="fa-solid fa-shield-halved" style="color: var(--pillar-gov); font-size: 1.2rem;"></i>
+              </div>
+              <h4>Governance_Compliance_Agent</h4>
+              <p style="font-size: 0.85rem; color: var(--text-muted);">Cumplimiento de seguridad, resguardo de IP y auditoría.</p>
+              <div class="card-status-label" id="status-card-gov">Estado: Pendiente</div>
+              <div class="click-hint"><i class="fa-solid fa-hand-pointer"></i> Ver dictamen exhaustivo</div>
+            </div>
+
+            <!-- Agent 4 Card -->
+            <div class="agent-profile-card clickable" data-agent="culture">
+              <div class="agent-header">
+                <span class="agent-badge culture">Cultura & Talento</span>
+                <i class="fa-solid fa-users-gear" style="color: var(--pillar-culture); font-size: 1.2rem;"></i>
+              </div>
+              <h4>People_Culture_Agent</h4>
+              <p style="font-size: 0.85rem; color: var(--text-muted);">Gestión del cambio, capacitación y mitigación de fricción laboral.</p>
+              <div class="card-status-label" id="status-card-culture">Estado: Pendiente</div>
+              <div class="click-hint"><i class="fa-solid fa-hand-pointer"></i> Ver dictamen exhaustivo</div>
+            </div>
+
+            <!-- Agent 5 Card -->
+            <div class="agent-profile-card clickable" data-agent="tech">
+              <div class="agent-header">
+                <span class="agent-badge tech">Tecnología</span>
+                <i class="fa-solid fa-code" style="color: var(--pillar-tech); font-size: 1.2rem;"></i>
+              </div>
+              <h4>Tech_Connector_Agent</h4>
+              <p style="font-size: 0.85rem; color: var(--text-muted);">Arquitectura de APIs, Middleware y Conectores.</p>
+              <div class="card-status-label" id="status-card-tech">Estado: Pendiente</div>
+              <div class="click-hint"><i class="fa-solid fa-hand-pointer"></i> Ver dictamen exhaustivo</div>
+            </div>
+
+            <!-- Agent 6 Card -->
+            <div class="agent-profile-card clickable" data-agent="agile">
+              <div class="agent-header">
+                <span class="agent-badge agile">Agile / Sprints</span>
+                <i class="fa-solid fa-bolt-lightning" style="color: var(--pillar-agile); font-size: 1.2rem;"></i>
+              </div>
+              <h4>Agile_Scrum_Agent</h4>
+              <p style="font-size: 0.85rem; color: var(--text-muted);">Definición de MVP, Sprints de 2 Semanas y User Stories.</p>
+              <div class="card-status-label" id="status-card-agile">Estado: Pendiente</div>
+              <div class="click-hint"><i class="fa-solid fa-hand-pointer"></i> Ver dictamen exhaustivo</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TABLERO DE SEGUIMIENTO DE AVANCES -->
+        <section id="tracker-section" style="display:none; margin-top:1rem;">
+          <div class="card">
+            <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <h3 class="card-title" style="color:var(--accent-emerald);"><i class="fa-solid fa-list-check"></i> Tablero de Seguimiento de Avance IA+ITD</h3>
+                <p style="font-size:0.85rem; color:var(--text-muted); margin-top:0.25rem;">El cliente puede marcar los avances de cada etapa, actualizar estados y ver el % global completado.</p>
+              </div>
+
+              <!-- Global Progress Gauge -->
+              <div style="text-align:right;">
+                <div style="font-size:0.8rem; color:var(--text-muted);">Índice de Avance Real:</div>
+                <div id="tracker-progress-percentage" style="font-size:1.8rem; font-family:'Outfit',sans-serif; font-weight:700; color:var(--accent-emerald);">0%</div>
+              </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div style="background:rgba(255,255,255,0.05); height:12px; border-radius:6px; overflow:hidden; border:1px solid var(--border-color);">
+              <div id="tracker-progress-bar" style="width:0%; height:100%; background:linear-gradient(90deg, var(--accent-cyan), var(--accent-emerald)); transition:width 0.4s ease;"></div>
+            </div>
+
+            <!-- Interactive Milestone Tracker List -->
+            <div id="tracker-milestones-list" style="display:flex; flex-direction:column; gap:1rem; margin-top:1rem;">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </section>
+
+      </div>
 
     </main>
 

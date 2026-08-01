@@ -13,9 +13,85 @@ document.addEventListener('DOMContentLoaded', () => {
   const statusLabel = document.getElementById('execution-status-label');
   const btnOpenReport = document.getElementById('btn-open-report');
   const navReportLink = document.getElementById('nav-report-link');
-  const navTrackerLink = document.getElementById('nav-tracker-link');
-  const navAnalyticsLink = document.getElementById('nav-analytics-link');
-  const analyticsSection = document.getElementById('analytics-section');
+  const btnNewAnalysis = document.getElementById('btn-new-analysis');
+  const btnResetForm = document.getElementById('btn-reset-form');
+
+  function resetForNewCompany() {
+    processTextArea.value = "";
+    if (objectiveTextArea) objectiveTextArea.value = "";
+    if (presetSelect) presetSelect.value = "custom";
+
+    latestExecutionData = null;
+    clientClarifications = {};
+    trackerTasksState = [];
+
+    if (kpiOps) kpiOps.textContent = '--';
+    if (kpiRoi) kpiRoi.textContent = '--';
+    if (kpiGov) kpiGov.textContent = '--';
+    if (kpiCulture) kpiCulture.textContent = '--';
+    if (kpiTech) kpiTech.textContent = '--';
+
+    ['ops', 'roi', 'gov', 'culture', 'tech', 'agile'].forEach(k => {
+      const cardEl = document.getElementById(`status-card-${k}`);
+      if (cardEl) cardEl.textContent = 'Estado: Pendiente';
+    });
+
+    resetPipelineUI();
+
+    if (missingInfoSection) missingInfoSection.style.display = "none";
+    if (trackerSection) trackerSection.style.display = "none";
+    if (btnOpenReport) btnOpenReport.style.display = "none";
+    if (statusLabel) statusLabel.textContent = "Ingresa la problemática";
+
+    if (terminalOutput) {
+      terminalOutput.innerHTML = `
+        <div class="log-entry">
+          <span class="log-time">[SISTEMA IA+ITD]</span>
+          <span style="color: var(--text-muted);">Terminal limpia. Listo para procesar un nuevo diagnóstico de empresa.</span>
+        </div>
+      `;
+    }
+
+    showScreen('diagnostic');
+    processTextArea.focus();
+  }
+
+  if (btnNewAnalysis) btnNewAnalysis.addEventListener('click', resetForNewCompany);
+  if (btnResetForm) btnResetForm.addEventListener('click', resetForNewCompany);
+
+  function showScreen(screenName) {
+    if (screenName === 'dashboard') {
+      if (screenDashboard) screenDashboard.style.display = 'block';
+      if (screenDiagnostic) screenDiagnostic.style.display = 'none';
+      if (navDashLink) navDashLink.classList.add('active');
+      if (navSimLink) navSimLink.classList.remove('active');
+      if (navPilaresLink) navPilaresLink.classList.remove('active');
+      if (navTrackerLink) navTrackerLink.classList.remove('active');
+      if (navAnalyticsLink) navAnalyticsLink.classList.add('active');
+    } else {
+      if (screenDashboard) screenDashboard.style.display = 'none';
+      if (screenDiagnostic) screenDiagnostic.style.display = 'block';
+      if (navSimLink) navSimLink.classList.add('active');
+      if (navDashLink) navDashLink.classList.remove('active');
+      if (navAnalyticsLink) navAnalyticsLink.classList.remove('active');
+    }
+  }
+
+  if (navDashLink) navDashLink.addEventListener('click', (e) => { e.preventDefault(); showScreen('dashboard'); });
+  if (navAnalyticsLink) navAnalyticsLink.addEventListener('click', (e) => { e.preventDefault(); showScreen('dashboard'); });
+  if (navSimLink) navSimLink.addEventListener('click', (e) => { e.preventDefault(); showScreen('diagnostic'); });
+  if (navPilaresLink) navPilaresLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    showScreen('diagnostic');
+    const el = document.getElementById('pilares');
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  });
+  if (navTrackerLink) navTrackerLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    showScreen('diagnostic');
+    const el = document.getElementById('tracker-section');
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  });
 
   const btnModeSim = document.getElementById('btn-mode-sim');
   const btnModeApi = document.getElementById('btn-mode-api');

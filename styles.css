@@ -737,24 +737,32 @@ h1, h2, h3, h4, .brand-title {
 @media print {
   @page {
     margin: 1.5cm;
+  @page {
     size: A4 portrait;
+    margin: 1.5cm;
   }
   body, html {
-    background: #fff !important;
-    color: #000 !important;
+    background: #ffffff !important;
+    color: #1e293b !important;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
     overflow: visible !important;
     height: auto !important;
   }
-  .sidebar, .top-header, .simulator-section, .kpi-grid, .modal-close, #tracker-section, .click-hint, .mode-toggle, #pilares {
+  .sidebar, .top-header, .simulator-section, .kpi-grid, .modal-close, #tracker-section, .click-hint, .mode-toggle, #pilares, #screen-dashboard, #screen-diagnostic, #btn-print-report {
     display: none !important;
+  }
+  .main-layout {
+    display: block !important;
+    padding: 0 !important;
   }
   .modal-backdrop {
     position: static !important;
-    background: transparent !important;
+    background: #ffffff !important;
     backdrop-filter: none !important;
     opacity: 1 !important;
     pointer-events: auto !important;
     display: block !important;
+    padding: 0 !important;
   }
   .modal-content {
     border: none !important;
@@ -763,9 +771,19 @@ h1, h2, h3, h4, .brand-title {
     max-width: 100% !important;
     max-height: none !important;
     overflow: visible !important;
-    background: #fff !important;
-    color: #000 !important;
+    background: #ffffff !important;
+    color: #1e293b !important;
     display: block !important;
+    padding: 0 !important;
+  }
+  .modal-header {
+    border-bottom: 2px solid #0f172a !important;
+    padding-bottom: 0.5rem !important;
+    margin-bottom: 1.5rem !important;
+  }
+  .modal-header h3 {
+    color: #0f172a !important;
+    font-size: 16pt !important;
   }
   .modal-body {
     overflow: visible !important;
@@ -773,16 +791,33 @@ h1, h2, h3, h4, .brand-title {
     padding: 0 !important;
   }
   .report-section {
-    background: #fff !important;
+    background: #ffffff !important;
     border: 1px solid #cbd5e1 !important;
-    color: #000 !important;
+    border-radius: 8px !important;
+    padding: 1.25rem !important;
+    color: #1e293b !important;
     page-break-inside: avoid !important;
     break-inside: avoid !important;
     margin-bottom: 1.5rem !important;
   }
-  .report-section h4 { color: #0f172a !important; }
-  .action-item { background: #f8fafc !important; color: #000 !important; border-left-color: #059669 !important; page-break-inside: avoid !important; }
-  pre.json-viewer { background: #f1f5f9 !important; color: #000 !important; border: 1px solid #cbd5e1 !important; }
+  .report-section h4, .report-section h2, .report-section h3, .report-section h5 {
+    color: #0f172a !important;
+  }
+  .action-item {
+    background: #f8fafc !important;
+    color: #0f172a !important;
+    border: 1px solid #e2e8f0 !important;
+    border-left: 4px solid #059669 !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    margin-bottom: 0.5rem !important;
+    padding: 0.75rem !important;
+  }
+  .agent-badge {
+    border: 1px solid #94a3b8 !important;
+    color: #0f172a !important;
+    background: #f1f5f9 !important;
+  }
 }
 
 /* Scrollbar */
