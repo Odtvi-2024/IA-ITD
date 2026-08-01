@@ -6,83 +6,38 @@ document.addEventListener('DOMContentLoaded', () => {
   // Elements
   const presetSelect = document.getElementById('preset-scenario');
   const processTextArea = document.getElementById('process-description');
+  const objectiveTextArea = document.getElementById('company-objective');
   const btnRun = document.getElementById('btn-run-simulation');
   const btnClear = document.getElementById('btn-clear-terminal');
   const terminalOutput = document.getElementById('terminal-output');
   const statusLabel = document.getElementById('execution-status-label');
   const btnOpenReport = document.getElementById('btn-open-report');
   const navReportLink = document.getElementById('nav-report-link');
-  
-  const btnModeSim = document.getElementById('btn-mode-sim');
-  const btnModeApi = document.getElementById('btn-mode-api');
 
-  // Missing Info Section
-  const missingInfoSection = document.getElementById('missing-info-section');
-  const missingQuestionsList = document.getElementById('missing-questions-list');
-  const btnSubmitAnswers = document.getElementById('btn-submit-answers');
-
-  // Tracker Section Elements
-  const trackerSection = document.getElementById('tracker-section');
-  const trackerMilestonesList = document.getElementById('tracker-milestones-list');
-  const trackerProgressPercentage = document.getElementById('tracker-progress-percentage');
-  const trackerProgressBar = document.getElementById('tracker-progress-bar');
-
-  // KPI elements
-  const kpiOps = document.getElementById('kpi-ops');
-  const kpiRoi = document.getElementById('kpi-roi');
-  const kpiGov = document.getElementById('kpi-gov');
-  const kpiCulture = document.getElementById('kpi-culture');
-  const kpiTech = document.getElementById('kpi-tech');
-
-  // Pipeline steps
-  const steps = {
-    ops: document.getElementById('step-ops'),
-    roi: document.getElementById('step-roi'),
-    gov: document.getElementById('step-gov'),
-    culture: document.getElementById('step-culture'),
-    tech: document.getElementById('step-tech'),
-    agile: document.getElementById('step-agile')
-  };
-
-  // Modals
-  const modalAgent = document.getElementById('modal-agent');
-  const modalAgentTitle = document.getElementById('modal-agent-title');
-  const modalAgentBody = document.getElementById('modal-agent-body');
-  const btnCloseAgentModal = document.getElementById('btn-close-agent-modal');
-
-  const modalReport = document.getElementById('modal-report');
-  const modalReportBody = document.getElementById('modal-report-body');
-  const btnCloseReportModal = document.getElementById('btn-close-report-modal');
-  const btnPrintReport = document.getElementById('btn-print-report');
-
-  // State
-  let mode = 'sim'; 
-  let isRunning = false;
-  let latestExecutionData = null;
-  let clientClarifications = {}; 
-  let trackerTasksState = []; 
-
-  // Preset scenarios
-  const scenarios = {
-    "1": "El departamento financiero recibe 500 facturas mensuales en PDF por correo. Los analistas revisan manualmente cada factura, la digitan en Excel, buscan el centro de costo en SAP y solicitan aprobación vía Email a gerencia. El proceso toma 14 horas por lote y genera errores de digitación.",
-    "2": "El equipo de RRHH tarda 5 días hábiles en enrolar a un nuevo empleado: llenar formularios en papel, crear manualmente usuarios en Active Directory, solicitar credenciales en cuentas bancarias corporativas y asignar equipo de cómputo en Mesa de Ayuda.",
-    "3": "Mesa de ayuda recibe 1,200 tickets al mes de restablecimiento de contraseña y permisos. Los analistas atienden cada ticket en un promedio de 25 minutos, congestionando el soporte y retrasando problemas críticos de la empresa."
+  const scenarioObjectives = {
+    "1": "Automatizar la aprobación y contabilización de facturas en SAP para eliminar el 90% del tiempo de procesado manual y cero errores.",
+    "2": "Reducir el tiempo de alta de nuevos empleados de 5 días a menos de 2 horas con creación automática de usuarios y permisos en Active Directory.",
+    "3": "Implementar un bot de auto-servicio de contraseñas de IA para liberar el 80% de la carga de soporte Nivel 1."
   };
 
   // Event Listeners
   presetSelect.addEventListener('change', (e) => {
-    if (scenarios[e.target.value]) {
-      processTextArea.value = scenarios[e.target.value];
-    } else if (e.target.value === 'custom') {
+    const val = e.target.value;
+    if (scenarios[val]) {
+      processTextArea.value = scenarios[val];
+      if (objectiveTextArea) objectiveTextArea.value = scenarioObjectives[val] || "";
+    } else if (val === 'custom') {
       processTextArea.value = "";
-      processTextArea.placeholder = "Pega o escribe aquí el diagnóstico real realizado en tu empresa...";
+      if (objectiveTextArea) objectiveTextArea.value = "";
+      processTextArea.placeholder = "Describe los problemas, procesos manuales, cuellos de botella, equipo y situación actual...";
       processTextArea.focus();
     }
   });
 
-  // Limpiar campo si está seleccionada la opción custom al cargar
+  // Limpiar campos si está seleccionada la opción custom al cargar
   if (presetSelect.value === 'custom') {
     processTextArea.value = "";
+    if (objectiveTextArea) objectiveTextArea.value = "";
   }
 
   btnModeSim.addEventListener('click', () => {
@@ -115,18 +70,20 @@ document.addEventListener('DOMContentLoaded', () => {
   btnRun.addEventListener('click', async () => {
     if (isRunning) return;
     const text = processTextArea.value.trim();
+    const objective = objectiveTextArea ? objectiveTextArea.value.trim() : "";
+
     if (!text) {
-      alert("Por favor pega o ingresa el texto del diagnóstico de tu empresa en el cuadro de texto.");
+      alert("Por favor ingresa la problemática o situación actual de tu empresa en el cuadro 1.");
       return;
     }
 
     isRunning = true;
     btnRun.disabled = true;
-    statusLabel.textContent = "Analizando diagnóstico de la empresa...";
+    statusLabel.textContent = "Analizando brecha (As-Is vs. To-Be)...";
     resetPipelineUI();
     missingInfoSection.style.display = "none";
 
-    await runExhaustiveAnalysis(text);
+    await runExhaustiveAnalysis(text, objective);
 
     isRunning = false;
     btnRun.disabled = false;
@@ -245,100 +202,129 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const delay = ms => new Promise(res => setTimeout(res, ms));
 
-  // Smart Entity & Context Extractor for Dynamic Case Analysis
-  function extractCaseContext(rawText) {
-    const textUpper = rawText.toUpperCase();
+  // Universal Semantic Extractor for ANY of 100+ different companies and objectives
+  function extractCaseContext(rawProblemText, rawObjectiveText = "") {
+    const combinedText = (rawProblemText + " " + rawObjectiveText).trim();
+    const problemUpper = rawProblemText.toUpperCase();
     
-    // 1. Detect Domain / Process Type
-    let domain = "Operaciones de la Empresa";
-    if (textUpper.includes("REPUESTO") || textUpper.includes("MANTENIMIENTO") || textUpper.includes("LOGÍSTICA") || textUpper.includes("LOGISTICA") || textUpper.includes("FAENA")) {
-      domain = "Mantenimiento y Logística de Repuestos";
-    } else if (textUpper.includes("FACTURA") || textUpper.includes("PAGO") || textUpper.includes("FINANCIER") || textUpper.includes("CONTABL")) {
-      domain = "Gestión Financiera de Facturas y Pagos";
-    } else if (textUpper.includes("EMPLEADO") || textUpper.includes("RRHH") || textUpper.includes("ONBOARDING") || textUpper.includes("CONTRAT")) {
-      domain = "Gestión de RRHH y Onboarding";
-    } else if (textUpper.includes("TICKET") || textUpper.includes("SOPORTE") || textUpper.includes("AYUDA") || textUpper.includes("CONTRASEÑA")) {
-      domain = "Mesa de Ayuda y Soporte TI";
-    } else if (textUpper.includes("VENTA") || textUpper.includes("CLIENTE") || textUpper.includes("COTIZA") || textUpper.includes("COMERCIAL")) {
-      domain = "Gestión Comercial y Cotizaciones";
+    // 1. Extract Core Subject / Industry from raw text dynamically
+    let subject = "los servicios y operaciones de la empresa";
+    const subjectMatch = rawProblemText.match(/(empresa\s*de\s*[\w\s]{3,30}|dedica\s*a\s*[\w\s]{3,30}|servicios\s*de\s*[\w\s]{3,30}|departamento\s*de\s*[\w\s]{3,30}|área\s*de\s*[\w\s]{3,30})/i);
+    if (subjectMatch) {
+      subject = subjectMatch[1].trim();
+    } else if (problemUpper.includes("DISEÑO") || problemUpper.includes("INDUSTRIAL") || problemUpper.includes("RENDER")) {
+      subject = "los servicios de diseño industrial y desarrollo de proyectos";
+    } else if (problemUpper.includes("FACTURA") || problemUpper.includes("FINANCIER") || problemUpper.includes("PAGO")) {
+      subject = "el proceso de aprobación de facturas y contabilidad";
+    } else if (problemUpper.includes("RRHH") || problemUpper.includes("ONBOARDING") || problemUpper.includes("EMPLEADO")) {
+      subject = "el proceso de onboarding de personal y accesos IT";
+    } else if (problemUpper.includes("TICKET") || problemUpper.includes("SOPORTE") || problemUpper.includes("MESA DE AYUDA")) {
+      subject = "la atención de tickets en la mesa de ayuda";
+    } else if (problemUpper.includes("REPUESTO") || problemUpper.includes("MANTENIMIENTO") || problemUpper.includes("LOGISTICA")) {
+      subject = "la gestión de repuestos y logística de mantenimiento";
     }
 
-    // 2. Detect Systems
+    // 2. Extract Desired Objective / Goal (To-Be)
+    let desiredGoal = "agregar mayor valor percibido y optimizar la capacidad operativa";
+    if (rawObjectiveText && rawObjectiveText.trim().length > 5) {
+      desiredGoal = rawObjectiveText.trim();
+    } else {
+      const goalMatch = rawProblemText.match(/(agregar\s*valor[\w\s]*|\bcuánto[\w\s]*|\bcómo[\w\s]*|\bescal[\w\s]*|\baumentar\s*[\w\s]*|\breducir\s*[\w\s]*)/i);
+      if (goalMatch) desiredGoal = goalMatch[1].trim();
+    }
+
+    // 3. Extract Core Bottleneck / Pain Point (As-Is)
+    let currentPain = "los tiempos de procesamiento manual";
+    const painMatch = rawProblemText.match(/(errores\s*de\s*[\w\s]+|detiene\s*[\w\s]+|retraso\s*[\w\s]+|pérdida\s*[\w\s]+|demora\s*[\w\s]+|tarda\s*[\w\s]+|lote\s*y\s*gener[\w\s]+)/i);
+    if (painMatch) currentPain = painMatch[1].trim();
+
+    // 4. Extract Systems & Tools
     const systems = [];
-    if (textUpper.includes("SAP")) systems.push("SAP ERP");
-    if (textUpper.includes("EXCEL") || textUpper.includes("PLANILLA")) systems.push("Microsoft Excel");
-    if (textUpper.includes("PDF")) systems.push("Archivos PDF");
-    if (textUpper.includes("ACTIVE DIRECTORY") || textUpper.includes("AZURE AD")) systems.push("Active Directory");
-    if (textUpper.includes("WHATSAPP")) systems.push("WhatsApp");
-    if (textUpper.includes("EMAIL") || textUpper.includes("CORREO") || textUpper.includes("OUTLOOK")) systems.push("Email");
-    if (systems.length === 0) systems.push("Sistemas Corporativos Legados");
+    if (combinedText.toUpperCase().includes("SAP")) systems.push("SAP ERP");
+    if (combinedText.toUpperCase().includes("EXCEL") || combinedText.toUpperCase().includes("PLANILLA")) systems.push("Microsoft Excel");
+    if (combinedText.toUpperCase().includes("PDF")) systems.push("Archivos PDF");
+    if (combinedText.toUpperCase().includes("ACTIVE DIRECTORY")) systems.push("Active Directory");
+    if (combinedText.toUpperCase().includes("CAD") || combinedText.toUpperCase().includes("3D")) systems.push("Software CAD/3D");
+    if (combinedText.toUpperCase().includes("WHATSAPP")) systems.push("WhatsApp");
+    if (combinedText.toUpperCase().includes("EMAIL") || combinedText.toUpperCase().includes("CORREO")) systems.push("Email");
+    if (systems.length === 0) systems.push("las herramientas de trabajo actuales");
 
-    // 3. Extract Specific Metrics (Volume, Time, Money, Pain)
-    const volumeMatch = rawText.match(/(\d+[\d\.,]*)\s*(solicitudes|facturas|tickets|documentos|archivos|pedidos|registros|órdenes|ordenes)/i);
-    const volumeText = volumeMatch ? `${volumeMatch[1]} ${volumeMatch[2]}` : "el volumen procesado";
+    // 5. Extract Team & Revenue Context
+    const workerMatch = rawProblemText.match(/(\d+)\s*(trabajadores|empleados|personas|colaboradores|analistas)/i);
+    const workerText = workerMatch ? `${workerMatch[1]} trabajadores` : null;
 
-    const hoursMatch = rawText.match(/(\d+)\s*(horas|hrs|h|días|dias)/i);
-    const timeText = hoursMatch ? `${hoursMatch[1]} ${hoursMatch[2]}` : null;
+    const hasPartTime = combinedText.toUpperCase().includes("PART-TIME") || combinedText.toUpperCase().includes("PART TIME") || combinedText.toUpperCase().includes("FREELANCE");
 
-    const costMatch = rawText.match(/(\$\s*[\d\.,]+|\d+\s*(usd|dólares|dolares|pesos))/i);
-    const costText = costMatch ? costMatch[1] : null;
+    const revenueMatch = rawProblemText.match(/([\d\.,]+\s*(pesos|usd|\$|dólares|dolares|mensuales|anuales))/i);
+    const revenueText = revenueMatch ? revenueMatch[1].trim() : null;
 
-    const painMatch = rawText.match(/(errores\s*de\s*[\w\s]+|detiene\s*[\w\s]+|retraso\s*[\w\s]+|pérdida\s*[\w\s]+|demora\s*[\w\s]+)/i);
-    const painText = painMatch ? painMatch[1].trim() : null;
-
-    return { domain, systems, volumeText, timeText, costText, painText, rawText };
+    return { subject, desiredGoal, currentPain, systems, workerText, hasPartTime, revenueText, rawProblemText, rawObjectiveText };
   }
 
-  // Dynamic Context-Aware Question Generator Function tailored to each studied case
-  function generateContextualQuestions(rawText) {
-    const ctx = extractCaseContext(rawText);
-    const mainSys = ctx.systems[0] || "el sistema principal";
+  // Generate 6 True Dynamic Questions analyzing the exact GAP (Problem vs Objective)
+  function generateContextualQuestions(rawProblemText, rawObjectiveText = "") {
+    const ctx = extractCaseContext(rawProblemText, rawObjectiveText);
+    const mainSys = ctx.systems[0] || "las herramientas actuales";
     const secSys = ctx.systems[1] || "las planillas de control";
     const questions = [];
 
-    // 1. ProcessOptimizer_Agent (Operations)
-    let q1 = `1. Sobre el proceso de ${ctx.domain} (${ctx.volumeText}): ¿Qué porcentaje de las solicitudes presenta descripciones o formatos ambiguos que obligan a revisiones manuales excepcionales?`;
-    if (ctx.timeText) {
-      q1 = `1. Dado que el proceso de ${ctx.domain} toma actualmente ${ctx.timeText}: ¿En qué paso específico entre ${mainSys} y ${secSys} se produce el mayor cuello de botella?`;
+    // 1. ProcessOptimizer_Agent (Operations & Process GAP)
+    questions.push({
+      agent: "ProcessOptimizer_Agent",
+      pilar: "Operaciones",
+      question: `1. Para lograr la meta de "${ctx.desiredGoal}" en ${ctx.subject}: ¿En qué etapa específica del proceso actual (${ctx.currentPain}) se produce la mayor pérdida de tiempo que frena alcanzar ese objetivo?`
+    });
+
+    // 2. ROI_Guardian_Agent (ROI & Value GAP)
+    let q2 = `2. Analizando el objetivo de "${ctx.desiredGoal}" ${ctx.revenueText ? 'con un nivel de ventas actuales de ' + ctx.revenueText : ''}: ¿Qué presupuesto o margen adicional proyectan generar y cuánto costo ${ctx.hasPartTime ? 'en personal part-time' : ''} se busca optimizar?`;
+    questions.push({
+      agent: "ROI_Guardian_Agent",
+      pilar: "ROI Financiero",
+      question: q2
+    });
+
+    // 3. Governance_Compliance_Agent (Governance & IP GAP)
+    let q3 = `3. Para resguardar a la empresa mientras avanzan hacia "${ctx.desiredGoal}": ¿Qué normativas, firmas de aprobación o resguardo de propiedad intelectual (ej: diseños/planos o datos confidenciales) se deben exigir?`;
+    if (ctx.hasPartTime) {
+      q3 = `3. Al trabajar con personal part-time/por demanda para lograr "${ctx.desiredGoal}": ¿Cómo protegen los derechos de autor, acuerdos de confidencialidad (NDA) y accesos a la información de clientes?`;
     }
-    questions.push({ agent: "ProcessOptimizer_Agent", pilar: "Operaciones", question: q1 });
+    questions.push({
+      agent: "Governance_Compliance_Agent",
+      pilar: "Gobernanza",
+      question: q3
+    });
 
-    // 2. ROI_Guardian_Agent (ROI Financiero)
-    let q2 = `2. Respecto al impacto económico en ${ctx.domain}: ¿Cuál es el costo financiero o la pérdida estimada para la empresa causada por ${ctx.painText || 'los retrasos operativos'}?`;
-    if (ctx.costText) {
-      q2 = `2. En relación al monto o umbral detectado (${ctx.costText}): ¿Existen pérdidas indirectas o costos de oportunidad derivados de la demora en la aprobación de estas operaciones?`;
-    }
-    questions.push({ agent: "ROI_Guardian_Agent", pilar: "ROI Financiero", question: q2 });
+    // 4. People_Culture_Agent (Culture & Team GAP)
+    questions.push({
+      agent: "People_Culture_Agent",
+      pilar: "Cultura",
+      question: `4. En relación al equipo ${ctx.workerText ? 'de ' + ctx.workerText : 'de la empresa'} ${ctx.hasPartTime ? 'y el personal part-time' : ''}: ¿Qué herramientas de IA o automatización conocen hoy y qué capacitación requieren para acelerar el logro de "${ctx.desiredGoal}"?`
+    });
 
-    // 3. Governance_Compliance_Agent (Gobernanza)
-    let q3 = `3. En materia de Gobernanza y Seguridad para ${ctx.domain}: ¿Qué controles de auditoría o firmas digitales de autorización se exigen al integrar ${mainSys}?`;
-    if (ctx.costText) {
-      q3 = `3. Para transacciones o compras críticas (ej: ${ctx.costText}): ¿Se requiere aprobación en 2 pasos de la jefatura con registro de auditoría cifrado?`;
-    }
-    questions.push({ agent: "Governance_Compliance_Agent", pilar: "Gobernanza", question: q3 });
+    // 5. Tech_Connector_Agent (Technology GAP)
+    questions.push({
+      agent: "Tech_Connector_Agent",
+      pilar: "Tecnología",
+      question: `5. Desde la perspectiva tecnológica para impulsar "${ctx.desiredGoal}": ¿Tienen centralizada la información y herramientas en la nube (${mainSys}) para permitir trabajo colaborativo en tiempo real?`
+    });
 
-    // 4. People_Culture_Agent (Cultura)
-    let q4 = `4. En relación al equipo operativo de ${ctx.domain}: ¿Existe resistencia a reemplazar ${secSys} por un asistente de IA autónomo, o el personal está dispuesto a capacitarse en la herramienta?`;
-    questions.push({ agent: "People_Culture_Agent", pilar: "Cultura", question: q4 });
-
-    // 5. Tech_Connector_Agent (Tecnología)
-    let q5 = `5. Sobre la infraestructura de ${mainSys}: ¿Disponen de APIs REST / Webhooks o conectores directos para consultar datos e inventarios en tiempo real?`;
-    questions.push({ agent: "Tech_Connector_Agent", pilar: "Tecnología", question: q5 });
-
-    // 6. Agile_Scrum_Agent (Agile)
-    let q6 = `6. Para definir el MVP del Sprint 1 (primeras 2 semanas) en ${ctx.domain}: ¿Cuáles son las 2 funcionalidades o tipos de solicitudes más urgentes que la gerencia exige automatizar como Quick Win?`;
-    questions.push({ agent: "Agile_Scrum_Agent", pilar: "Metodologías Ágiles", question: q6 });
+    // 6. Agile_Scrum_Agent (Agile & MVP GAP)
+    questions.push({
+      agent: "Agile_Scrum_Agent",
+      pilar: "Metodologías Ágiles",
+      question: `6. Para definir el MVP del Sprint 1 (semanas 1 y 2) que entregue valor inmediato hacia "${ctx.desiredGoal}": ¿Cuál es la primera funcionalidad u oferta clave que deberíamos lanzar como Quick Win?`
+    });
 
     return questions;
   }
 
   // Exhaustive Multi-Agent Analysis Engine
-  async function runExhaustiveAnalysis(diagnosticText, isReevaluation = false) {
-    logTerminal("ORQUESTADOR IA+ITD", `${isReevaluation ? 'Re-evaluando' : 'Iniciando'} análisis situacional sobre el texto (${diagnosticText.length} caracteres)...`, "tech");
+  async function runExhaustiveAnalysis(diagnosticText, companyObjectiveText = "", isReevaluation = false) {
+    logTerminal("ORQUESTADOR IA+ITD", `${isReevaluation ? 'Re-evaluando' : 'Iniciando'} análisis situacional sobre la problemática y meta deseada...`, "tech");
     await delay(500);
 
     const systemsFound = [];
-    const textUpper = diagnosticText.toUpperCase();
+    const textUpper = (diagnosticText + " " + companyObjectiveText).toUpperCase();
     if (textUpper.includes("EXCEL") || textUpper.includes("PLANILLA")) systemsFound.push("Microsoft Excel");
     if (textUpper.includes("SAP")) systemsFound.push("SAP ERP");
     if (textUpper.includes("EMAIL") || textUpper.includes("CORREO") || textUpper.includes("OUTLOOK")) systemsFound.push("Email Gateway");
@@ -357,7 +343,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const hourMatch = diagnosticText.match(/(\d+)\s*(horas|hrs|h|días|dias)/i);
     const estimatedHours = hourMatch ? parseInt(hourMatch[1]) * (hourMatch[2].toLowerCase().includes("día") ? 8 : 1) : 14;
 
-    const questionsList = generateContextualQuestions(diagnosticText);
+    const questionsList = generateContextualQuestions(diagnosticText, companyObjectiveText);
 
     // AGENT 1: ProcessOptimizer_Agent
     setStepState('ops', 'active');
