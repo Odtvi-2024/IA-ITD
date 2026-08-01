@@ -1,8 +1,9 @@
+
 /* ==========================================================================
    LÓGICA DEL FRONTEND - IA+ITD (INFORME FINAL COMPLETO CON GUÍA DE ACCIONES)
    ========================================================================== */
 
-document.addEventListener('DOMContentLoaded', () => {
+/* INITIALIZATION */
   // 1. Inputs & Form Elements
   const presetSelect = document.getElementById('preset-scenario');
   const processTextArea = document.getElementById('process-description');
@@ -98,6 +99,23 @@ document.addEventListener('DOMContentLoaded', () => {
     "3": "Implementar un bot de auto-servicio de contraseñas de IA para liberar el 80% de la carga de soporte Nivel 1."
   };
 
+  // Diagnostic Flag Banner Helper
+  function setDiagnosticFlag(flagCode, textMessage) {
+    const flagEl = document.getElementById('flag-message');
+    const timeEl = document.getElementById('flag-timestamp');
+    const barEl = document.getElementById('diagnostic-flag-bar');
+
+    if (flagEl) flagEl.innerHTML = `🚩 [BANDERA ${flagCode}]: ${textMessage}`;
+    if (timeEl) timeEl.textContent = new Date().toLocaleTimeString();
+
+    if (barEl) {
+      barEl.style.background = 'linear-gradient(90deg, #10b981, #06b6d4)';
+      setTimeout(() => {
+        if (barEl) barEl.style.background = 'linear-gradient(90deg, #0284c7, #0d9488)';
+      }, 450);
+    }
+  }
+
   // Screen Switcher Helper
   function showScreen(screenName) {
     if (screenName === 'dashboard') {
@@ -108,12 +126,14 @@ document.addEventListener('DOMContentLoaded', () => {
       if (navPilaresLink) navPilaresLink.classList.remove('active');
       if (navTrackerLink) navTrackerLink.classList.remove('active');
       if (navAnalyticsLink) navAnalyticsLink.classList.add('active');
+      setDiagnosticFlag("VISTA", "Pantalla cambiada a Dashboard General de Analítica Avanzada.");
     } else {
       if (screenDashboard) screenDashboard.style.display = 'none';
       if (screenDiagnostic) screenDiagnostic.style.display = 'block';
       if (navSimLink) navSimLink.classList.add('active');
       if (navDashLink) navDashLink.classList.remove('active');
       if (navAnalyticsLink) navAnalyticsLink.classList.remove('active');
+      setDiagnosticFlag("VISTA", "Pantalla cambiada a Formulario de Análisis Diagnóstico.");
     }
   }
 
@@ -248,6 +268,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     try {
+      setDiagnosticFlag("2: BOTÓN PRESIONADO", "Iniciando orquestación de 6 Agentes sobre problemática y objetivo...");
       isRunning = true;
       if (btnRun) {
         btnRun.disabled = true;
@@ -269,6 +290,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (trackerSection) trackerSection.style.display = "block";
       if (analyticsSection) analyticsSection.style.display = "block";
 
+      setDiagnosticFlag("9: COMPLETADO EXITOSAMENTE", "6 Dictámenes y 6 Preguntas Deducidas listos abajo.");
+
       // Auto-scroll a las preguntas deducidas o dictámenes
       if (missingInfoSection && missingInfoSection.style.display !== "none") {
         missingInfoSection.scrollIntoView({ behavior: 'smooth' });
@@ -278,6 +301,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     } catch (err) {
       console.error("Error en ejecución de agentes:", err);
+      setDiagnosticFlag("ERROR", "Ocurrió una excepción al procesar la simulación.");
       isRunning = false;
       if (btnRun) {
         btnRun.disabled = false;
@@ -603,6 +627,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (kpiOps) kpiOps.textContent = `90% Reducción`;
     const cardOps = document.getElementById('status-card-ops');
     if (cardOps) cardOps.textContent = `Tiempo: 2 Semanas`;
+    setDiagnosticFlag("3: AGENTE OPERACIONES OK", "ProcessOptimizer_Agent completó mapa de procesos As-Is/To-Be.");
     await delay(120);
 
     // AGENT 2: ROI_Guardian_Agent
@@ -647,6 +672,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (kpiRoi) kpiRoi.textContent = `+${roiYear1}% ROI`;
     const cardRoi = document.getElementById('status-card-roi');
     if (cardRoi) cardRoi.textContent = `Payback: ${paybackMonths} meses`;
+    setDiagnosticFlag("4: AGENTE ROI OK", "ROI_Guardian_Agent generó modelo financiero (+340% ROI).");
     await delay(120);
 
     // AGENT 3: Governance_Compliance_Agent
@@ -1101,4 +1127,4 @@ document.addEventListener('DOMContentLoaded', () => {
     modalReport.classList.add('active');
   }
 
-});
+/* END INITIALIZATION */
