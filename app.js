@@ -3,19 +3,121 @@
    ========================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Elements
+  // 1. Inputs & Form Elements
   const presetSelect = document.getElementById('preset-scenario');
   const processTextArea = document.getElementById('process-description');
   const objectiveTextArea = document.getElementById('company-objective');
+
+  // 2. Action Buttons
   const btnRun = document.getElementById('btn-run-simulation');
   const btnClear = document.getElementById('btn-clear-terminal');
-  const terminalOutput = document.getElementById('terminal-output');
-  const statusLabel = document.getElementById('execution-status-label');
   const btnOpenReport = document.getElementById('btn-open-report');
-  const navReportLink = document.getElementById('nav-report-link');
   const btnNewAnalysis = document.getElementById('btn-new-analysis');
   const btnResetForm = document.getElementById('btn-reset-form');
+  const btnSubmitAnswers = document.getElementById('btn-submit-answers');
+  const btnModeSim = document.getElementById('btn-mode-sim');
+  const btnModeApi = document.getElementById('btn-mode-api');
 
+  // 3. Navigation Links
+  const navReportLink = document.getElementById('nav-report-link');
+  const navTrackerLink = document.getElementById('nav-tracker-link');
+  const navAnalyticsLink = document.getElementById('nav-analytics-link');
+  const navDashLink = document.getElementById('nav-dash-link');
+  const navSimLink = document.getElementById('nav-sim-link');
+  const navPilaresLink = document.getElementById('nav-pilares-link');
+
+  // 4. Screens & Main Sections
+  const screenDashboard = document.getElementById('screen-dashboard');
+  const screenDiagnostic = document.getElementById('screen-diagnostic');
+  const missingInfoSection = document.getElementById('missing-info-section');
+  const missingQuestionsList = document.getElementById('missing-questions-list');
+  const trackerSection = document.getElementById('tracker-section');
+  const analyticsSection = document.getElementById('analytics-section');
+
+  // 5. Console & Status Elements
+  const terminalOutput = document.getElementById('terminal-output');
+  const statusLabel = document.getElementById('execution-status-label');
+
+  // 6. Tracker Elements
+  const trackerMilestonesList = document.getElementById('tracker-milestones-list');
+  const trackerProgressPercentage = document.getElementById('tracker-progress-percentage');
+  const trackerProgressBar = document.getElementById('tracker-progress-bar');
+
+  // 7. KPI elements
+  const kpiOps = document.getElementById('kpi-ops');
+  const kpiRoi = document.getElementById('kpi-roi');
+  const kpiGov = document.getElementById('kpi-gov');
+  const kpiCulture = document.getElementById('kpi-culture');
+  const kpiTech = document.getElementById('kpi-tech');
+
+  // 8. Pipeline steps
+  const steps = {
+    ops: document.getElementById('step-ops'),
+    roi: document.getElementById('step-roi'),
+    gov: document.getElementById('step-gov'),
+    culture: document.getElementById('step-culture'),
+    tech: document.getElementById('step-tech'),
+    agile: document.getElementById('step-agile')
+  };
+
+  // 9. Modals
+  const modalAgent = document.getElementById('modal-agent');
+  const modalAgentTitle = document.getElementById('modal-agent-title');
+  const modalAgentBody = document.getElementById('modal-agent-body');
+  const btnCloseAgentModal = document.getElementById('btn-close-agent-modal');
+
+  const modalReport = document.getElementById('modal-report');
+  const modalReportBody = document.getElementById('modal-report-body');
+  const btnCloseReportModal = document.getElementById('btn-close-report-modal');
+  const btnPrintReport = document.getElementById('btn-print-report');
+
+  // 10. Slider Elements
+  const scaleSlider = document.getElementById('scale-slider');
+  const sliderVolumeVal = document.getElementById('slider-volume-val');
+  const simAnnualSavings = document.getElementById('sim-annual-savings');
+  const simHoursSaved = document.getElementById('sim-hours-saved');
+  const simCapacityBoost = document.getElementById('sim-capacity-boost');
+
+  // 11. State
+  let mode = 'sim'; 
+  let isRunning = false;
+  let latestExecutionData = null;
+  let clientClarifications = {}; 
+  let trackerTasksState = []; 
+
+  // Preset scenarios
+  const scenarios = {
+    "1": "El departamento financiero recibe 500 facturas mensuales en PDF por correo. Los analistas revisan manualmente cada factura, la digitan en Excel, buscan el centro de costo en SAP y solicitan aprobación vía Email a gerencia. El proceso toma 14 horas por lote y genera errores de digitación.",
+    "2": "El equipo de RRHH tarda 5 días hábiles en enrolar a un nuevo empleado: llenar formularios en papel, crear manualmente usuarios en Active Directory, solicitar credenciales en cuentas bancarias corporativas y asignar equipo de cómputo en Mesa de Ayuda.",
+    "3": "Mesa de ayuda recibe 1,200 tickets al mes de restablecimiento de contraseña y permisos. Los analistas atienden cada ticket en un promedio de 25 minutos, congestionando el soporte y retrasando problemas críticos de la empresa."
+  };
+
+  const scenarioObjectives = {
+    "1": "Automatizar la aprobación y contabilización de facturas en SAP para eliminar el 90% del tiempo de procesado manual y cero errores.",
+    "2": "Reducir el tiempo de alta de nuevos empleados de 5 días a menos de 2 horas con creación automática de usuarios y permisos en Active Directory.",
+    "3": "Implementar un bot de auto-servicio de contraseñas de IA para liberar el 80% de la carga de soporte Nivel 1."
+  };
+
+  // Screen Switcher Helper
+  function showScreen(screenName) {
+    if (screenName === 'dashboard') {
+      if (screenDashboard) screenDashboard.style.display = 'block';
+      if (screenDiagnostic) screenDiagnostic.style.display = 'none';
+      if (navDashLink) navDashLink.classList.add('active');
+      if (navSimLink) navSimLink.classList.remove('active');
+      if (navPilaresLink) navPilaresLink.classList.remove('active');
+      if (navTrackerLink) navTrackerLink.classList.remove('active');
+      if (navAnalyticsLink) navAnalyticsLink.classList.add('active');
+    } else {
+      if (screenDashboard) screenDashboard.style.display = 'none';
+      if (screenDiagnostic) screenDiagnostic.style.display = 'block';
+      if (navSimLink) navSimLink.classList.add('active');
+      if (navDashLink) navDashLink.classList.remove('active');
+      if (navAnalyticsLink) navAnalyticsLink.classList.remove('active');
+    }
+  }
+
+  // Reset for New Company Helper
   function resetForNewCompany() {
     processTextArea.value = "";
     if (objectiveTextArea) objectiveTextArea.value = "";
@@ -56,27 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
     processTextArea.focus();
   }
 
-  if (btnNewAnalysis) btnNewAnalysis.addEventListener('click', resetForNewCompany);
-  if (btnResetForm) btnResetForm.addEventListener('click', resetForNewCompany);
-
-  function showScreen(screenName) {
-    if (screenName === 'dashboard') {
-      if (screenDashboard) screenDashboard.style.display = 'block';
-      if (screenDiagnostic) screenDiagnostic.style.display = 'none';
-      if (navDashLink) navDashLink.classList.add('active');
-      if (navSimLink) navSimLink.classList.remove('active');
-      if (navPilaresLink) navPilaresLink.classList.remove('active');
-      if (navTrackerLink) navTrackerLink.classList.remove('active');
-      if (navAnalyticsLink) navAnalyticsLink.classList.add('active');
-    } else {
-      if (screenDashboard) screenDashboard.style.display = 'none';
-      if (screenDiagnostic) screenDiagnostic.style.display = 'block';
-      if (navSimLink) navSimLink.classList.add('active');
-      if (navDashLink) navDashLink.classList.remove('active');
-      if (navAnalyticsLink) navAnalyticsLink.classList.remove('active');
-    }
-  }
-
+  // Event Listeners for Navigation
   if (navDashLink) navDashLink.addEventListener('click', (e) => { e.preventDefault(); showScreen('dashboard'); });
   if (navAnalyticsLink) navAnalyticsLink.addEventListener('click', (e) => { e.preventDefault(); showScreen('dashboard'); });
   if (navSimLink) navSimLink.addEventListener('click', (e) => { e.preventDefault(); showScreen('diagnostic'); });
@@ -93,67 +175,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (el) el.scrollIntoView({ behavior: 'smooth' });
   });
 
-  const btnModeSim = document.getElementById('btn-mode-sim');
-  const btnModeApi = document.getElementById('btn-mode-api');
+  if (btnNewAnalysis) btnNewAnalysis.addEventListener('click', resetForNewCompany);
+  if (btnResetForm) btnResetForm.addEventListener('click', resetForNewCompany);
 
-  // Missing Info Section
-  const missingInfoSection = document.getElementById('missing-info-section');
-  const missingQuestionsList = document.getElementById('missing-questions-list');
-  const btnSubmitAnswers = document.getElementById('btn-submit-answers');
-
-  // Tracker Section Elements
-  const trackerSection = document.getElementById('tracker-section');
-  const trackerMilestonesList = document.getElementById('tracker-milestones-list');
-  const trackerProgressPercentage = document.getElementById('tracker-progress-percentage');
-  const trackerProgressBar = document.getElementById('tracker-progress-bar');
-
-  // KPI elements
-  const kpiOps = document.getElementById('kpi-ops');
-  const kpiRoi = document.getElementById('kpi-roi');
-  const kpiGov = document.getElementById('kpi-gov');
-  const kpiCulture = document.getElementById('kpi-culture');
-  const kpiTech = document.getElementById('kpi-tech');
-
-  // Pipeline steps
-  const steps = {
-    ops: document.getElementById('step-ops'),
-    roi: document.getElementById('step-roi'),
-    gov: document.getElementById('step-gov'),
-    culture: document.getElementById('step-culture'),
-    tech: document.getElementById('step-tech'),
-    agile: document.getElementById('step-agile')
-  };
-
-  // Modals
-  const modalAgent = document.getElementById('modal-agent');
-  const modalAgentTitle = document.getElementById('modal-agent-title');
-  const modalAgentBody = document.getElementById('modal-agent-body');
-  const btnCloseAgentModal = document.getElementById('btn-close-agent-modal');
-
-  const modalReport = document.getElementById('modal-report');
-  const modalReportBody = document.getElementById('modal-report-body');
-  const btnCloseReportModal = document.getElementById('btn-close-report-modal');
-  const btnPrintReport = document.getElementById('btn-print-report');
-
-  // State
-  let mode = 'sim'; 
-  let isRunning = false;
-  let latestExecutionData = null;
-  let clientClarifications = {}; 
-  let trackerTasksState = []; 
-
-  // Preset scenarios
-  const scenarios = {
-    "1": "El departamento financiero recibe 500 facturas mensuales en PDF por correo. Los analistas revisan manualmente cada factura, la digitan en Excel, buscan el centro de costo en SAP y solicitan aprobación vía Email a gerencia. El proceso toma 14 horas por lote y genera errores de digitación.",
-    "2": "El equipo de RRHH tarda 5 días hábiles en enrolar a un nuevo empleado: llenar formularios en papel, crear manualmente usuarios en Active Directory, solicitar credenciales en cuentas bancarias corporativas y asignar equipo de cómputo en Mesa de Ayuda.",
-    "3": "Mesa de ayuda recibe 1,200 tickets al mes de restablecimiento de contraseña y permisos. Los analistas atienden cada ticket en un promedio de 25 minutos, congestionando el soporte y retrasando problemas críticos de la empresa."
-  };
-
-  const scenarioObjectives = {
-    "1": "Automatizar la aprobación y contabilización de facturas en SAP para eliminar el 90% del tiempo de procesado manual y cero errores.",
-    "2": "Reducir el tiempo de alta de nuevos empleados de 5 días a menos de 2 horas con creación automática de usuarios y permisos en Active Directory.",
-    "3": "Implementar un bot de auto-servicio de contraseñas de IA para liberar el 80% de la carga de soporte Nivel 1."
-  };
+  // Default screen on startup
+  showScreen('diagnostic');
 
   // Event Listeners
   presetSelect.addEventListener('change', (e) => {
