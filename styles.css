@@ -30,6 +30,7 @@
   --pillar-gov: #f59e0b;
   --pillar-culture: #8b5cf6;
   --pillar-tech: #3b82f6;
+  --pillar-agile: #ec4899;
 
   /* Layout */
   --sidebar-width: 260px;
@@ -474,6 +475,7 @@ h1, h2, h3, h4, .brand-title {
 .log-agent.gov { color: var(--pillar-gov); }
 .log-agent.culture { color: var(--pillar-culture); }
 .log-agent.tech { color: var(--pillar-tech); }
+.log-agent.agile { color: var(--pillar-agile); }
 
 .json-viewer {
   background: rgba(0, 0, 0, 0.5);
@@ -535,6 +537,7 @@ h1, h2, h3, h4, .brand-title {
 .agent-badge.gov { background: rgba(245, 158, 11, 0.2); color: var(--pillar-gov); }
 .agent-badge.culture { background: rgba(139, 92, 246, 0.2); color: var(--pillar-culture); }
 .agent-badge.tech { background: rgba(59, 130, 246, 0.2); color: var(--pillar-tech); }
+.agent-badge.agile { background: rgba(236, 72, 153, 0.2); color: var(--pillar-agile); }
 
 .card-status-label {
   font-size: 0.8rem;

@@ -40,7 +40,8 @@ document.addEventListener('DOMContentLoaded', () => {
     roi: document.getElementById('step-roi'),
     gov: document.getElementById('step-gov'),
     culture: document.getElementById('step-culture'),
-    tech: document.getElementById('step-tech')
+    tech: document.getElementById('step-tech'),
+    agile: document.getElementById('step-agile')
   };
 
   // Modals
@@ -365,6 +366,13 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
+    // 6. Agile_Scrum Question
+    questions.push({
+      agent: "Agile_Scrum_Agent",
+      pilar: "Metodologías Ágiles",
+      question: "6. ¿Cuáles son las 2 victorias tempranas (Quick Wins) o funcionalidades críticas que la gerencia exige ver automatizadas en el Sprint 1 (primeras 2 semanas)?"
+    });
+
     return questions;
   }
 
@@ -563,14 +571,44 @@ document.addEventListener('DOMContentLoaded', () => {
     setStepState('tech', 'completed');
     kpiTech.textContent = "Arquitectura OK";
     document.getElementById('status-card-tech').textContent = "APIs: 2 Semanas";
+    await delay(600);
+
+    // AGENT 6: Agile_Scrum_Agent
+    setStepState('agile', 'active');
+    logTerminal("Agile_Scrum_Agent", "Diseñando arquitectura de Sprints, User Stories y definición de MVP...", "agile");
+    await delay(700);
+
+    const agileOutput = {
+      agent: "Agile_Scrum_Agent",
+      pilar: "Metodologías Ágiles & Sprints",
+      status: isReevaluation ? "BACKLOG DE SPRINTS RE-EVALUADO" : "PLANNING INICIAL DE SPRINTS",
+      estimated_execution_time: "Cadencia: Sprints Quincenales (3 Sprints = MVP en 6 Semanas)",
+      executive_summary: "Descomposición del proyecto en iteraciones de 2 semanas con entregables de software funcionando y priorización MoSCoW para garantizar valor temprano.",
+      mvp_scope_definition: `MVP (Sprint 1): Automatización del 20% del flujo central con ${systemsFound[0] || 'orquestador IA'}.`,
+      step_by_step_actions: [
+        { step: "Paso 1", title: "Acción 1: Redacción del Product Backlog & MoSCoW", duration: "2 días", responsible: "Scrum Master / Agile Coach", detail: "Priorizar las épicas e historias de usuario clasificando en Must Have, Should Have y Could Have." },
+        { step: "Paso 2", title: "Acción 2: Sprint 1 Planning (Enfoque en MVP)", duration: "3 días", responsible: "Equipo de Desarrollo / Producto", detail: `Definir las User Stories del Sprint 1 para conectar con ${systemsFound[0] || 'los sistemas principales'}.` },
+        { step: "Paso 3", title: "Acción 3: Criterios de Aceptación (Definition of Done)", duration: "2 días", responsible: "Agile Coach & QA", detail: "Establecer métricas de éxito (tasa de error < 0.1%, respuesta < 3 seg) requeridas para dar por terminada cada historia." },
+        { step: "Paso 4", title: "Acción 4: Ritmo de Dailies y Sprint Review Quincenal", duration: "Continuo", responsible: "Equipo Multidisciplinario", detail: "Ejecutar reuniones diarias de 15 min y demostraciones funcionales al cliente al cierre de cada Sprint de 2 semanas." }
+      ],
+      tangible_deliverables: "Product Backlog en Jira/Azure DevOps, Matriz MoSCoW y Tabla de User Stories con Definition of Done"
+    };
+    if (clientClarifications["Agile_Scrum_Agent"]) {
+      agileOutput.client_clarification_applied = clientClarifications["Agile_Scrum_Agent"];
+    }
+
+    logTerminal("Agile_Scrum_Agent", "Dictamen Ágil completado:", "agile", agileOutput);
+    setStepState('agile', 'completed');
+    document.getElementById('status-card-agile').textContent = "Sprints: 2 Semanas";
 
     // Consolidated Timeline Roadmap
     const timelineRoadmap = [
       { phase: "Fase 1: Levantamiento & Gobernanza", weeks: "Semanas 1 - 2", responsible: "Governance & ProcessOptimizer", actions: "Definir matriz PII, cifrado TLS/AES y mapear reglas del proceso As-Is.", deliverable: "Documento de Gobernanza & Sandbox" },
       { phase: "Fase 2: Integración Técnica & APIs", weeks: "Semanas 3 - 4", responsible: "Tech_Connector_Agent", actions: `Desplegar conectores REST/Webhooks para ${systemsFound.slice(0, 2).join(" y ")}.`, deliverable: "Conectores API Autenticados" },
       { phase: "Fase 3: Despliegue de Agentes & OCR", weeks: "Semanas 5 - 6", responsible: "ProcessOptimizer_Agent", actions: "Lanzar escuadrón de agentes en modo piloto automatizando el 50% del volumen.", deliverable: "Piloto Operativo de Automatización" },
-      { phase: "Fase 4: Gestión del Cambio & Upskilling", weeks: "Semanas 7 - 8", responsible: "People_Culture_Agent", actions: "Ejecutar taller 'Co-Piloto de IA' y reasignar horas liberadas a tareas analíticas.", deliverable: "Equipo Capacitado y Certificado" },
-      { phase: "Fase 5: Auditoría Financiera & Escalamiento", weeks: "Semanas 9 - 12", responsible: "ROI_Guardian_Agent", actions: `Auditar el ahorro neto anual ($${annualSavings.toLocaleString()}) y escalar al 100%.`, deliverable: "Informe de ROI y Pase a Producción" }
+      { phase: "Fase 4: Sprints Ágiles & MVP", weeks: "Semanas 7 - 8", responsible: "Agile_Scrum_Agent", actions: "Ejecutar Sprint 1 y Sprint 2 con entrega quincenal de software funcionando.", deliverable: "MVP Operativo con User Stories" },
+      { phase: "Fase 5: Gestión del Cambio & Upskilling", weeks: "Semanas 9 - 10", responsible: "People_Culture_Agent", actions: "Ejecutar taller 'Co-Piloto de IA' y reasignar horas liberadas a tareas analíticas.", deliverable: "Equipo Capacitado y Certificado" },
+      { phase: "Fase 6: Auditoría Financiera & Escalamiento", weeks: "Semanas 11 - 12", responsible: "ROI_Guardian_Agent", actions: `Auditar el ahorro neto anual ($${annualSavings.toLocaleString()}) y escalar al 100%.`, deliverable: "Informe de ROI y Pase a Producción" }
     ];
 
     // Store execution data globally
@@ -584,6 +622,7 @@ document.addEventListener('DOMContentLoaded', () => {
       gov: govOutput,
       culture: cultureOutput,
       tech: techOutput,
+      agile: agileOutput,
       questionsList,
       timelineRoadmap,
       isReevaluation
@@ -612,7 +651,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function buildTrackerTasksState() {
     if (!latestExecutionData) return;
 
-    const agentsList = [latestExecutionData.ops, latestExecutionData.roi, latestExecutionData.gov, latestExecutionData.culture, latestExecutionData.tech];
+    const agentsList = [latestExecutionData.ops, latestExecutionData.roi, latestExecutionData.gov, latestExecutionData.culture, latestExecutionData.tech, latestExecutionData.agile];
     trackerTasksState = [];
 
     agentsList.forEach(agent => {
@@ -696,7 +735,8 @@ document.addEventListener('DOMContentLoaded', () => {
       roi: "ROI y Valor Financiero",
       gov: "Gobernanza, Seguridad y Ética",
       culture: "Cultura y Talento",
-      tech: "Tecnología e Infraestructura"
+      tech: "Tecnología e Infraestructura",
+      agile: "Metodologías Ágiles & Sprints"
     };
 
     modalAgentTitle.innerHTML = `<i class="fa-solid fa-robot" style="color:var(--accent-cyan);"></i> Dictamen Exhaustivo: <b>${data.agent}</b>`;
@@ -749,7 +789,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!latestExecutionData) return;
 
     const d = latestExecutionData;
-    const agentsList = [d.ops, d.roi, d.gov, d.culture, d.tech];
+    const agentsList = [d.ops, d.roi, d.gov, d.culture, d.tech, d.agile];
 
     modalReportBody.innerHTML = `
       <!-- Report Banner Header -->
@@ -793,6 +833,12 @@ document.addEventListener('DOMContentLoaded', () => {
             <div style="font-size:0.75rem; color:var(--pillar-culture); text-transform:uppercase;">Preparación Cultural</div>
             <div style="font-size:1.4rem; font-weight:bold; color:#fff;">85/100</div>
             <div style="font-size:0.75rem; color:var(--text-muted);">Taller Co-Piloto listo</div>
+          </div>
+
+          <div style="background:rgba(236,72,153,0.1); border:1px solid var(--pillar-agile); padding:0.75rem; border-radius:6px;">
+            <div style="font-size:0.75rem; color:var(--pillar-agile); text-transform:uppercase;">Cadencia Ágil</div>
+            <div style="font-size:1.4rem; font-weight:bold; color:#fff;">Sprints 2 Sem</div>
+            <div style="font-size:0.75rem; color:var(--text-muted);">MVP en 6 Semanas</div>
           </div>
         </div>
       </div>

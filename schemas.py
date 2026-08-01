@@ -83,6 +83,16 @@ class TechConnectorOutput(BaseModel):
     step_by_step_actions: List[StepAction]
     tangible_deliverables: str
 
+class AgileScrumOutput(BaseModel):
+    agent: str = "Agile_Scrum_Agent"
+    pilar: str = "Metodologías Ágiles & Sprints"
+    status: str
+    estimated_execution_time: str
+    executive_summary: str
+    mvp_scope_definition: str
+    step_by_step_actions: List[StepAction]
+    tangible_deliverables: str
+
 class TransformationResponse(BaseModel):
     status: str
     process_description: str
