@@ -245,133 +245,89 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const delay = ms => new Promise(res => setTimeout(res, ms));
 
-  // Context-Aware Question Generator Function
-  function generateContextualQuestions(textUpper) {
+  // Smart Entity & Context Extractor for Dynamic Case Analysis
+  function extractCaseContext(rawText) {
+    const textUpper = rawText.toUpperCase();
+    
+    // 1. Detect Domain / Process Type
+    let domain = "Operaciones de la Empresa";
+    if (textUpper.includes("REPUESTO") || textUpper.includes("MANTENIMIENTO") || textUpper.includes("LOGÍSTICA") || textUpper.includes("LOGISTICA") || textUpper.includes("FAENA")) {
+      domain = "Mantenimiento y Logística de Repuestos";
+    } else if (textUpper.includes("FACTURA") || textUpper.includes("PAGO") || textUpper.includes("FINANCIER") || textUpper.includes("CONTABL")) {
+      domain = "Gestión Financiera de Facturas y Pagos";
+    } else if (textUpper.includes("EMPLEADO") || textUpper.includes("RRHH") || textUpper.includes("ONBOARDING") || textUpper.includes("CONTRAT")) {
+      domain = "Gestión de RRHH y Onboarding";
+    } else if (textUpper.includes("TICKET") || textUpper.includes("SOPORTE") || textUpper.includes("AYUDA") || textUpper.includes("CONTRASEÑA")) {
+      domain = "Mesa de Ayuda y Soporte TI";
+    } else if (textUpper.includes("VENTA") || textUpper.includes("CLIENTE") || textUpper.includes("COTIZA") || textUpper.includes("COMERCIAL")) {
+      domain = "Gestión Comercial y Cotizaciones";
+    }
+
+    // 2. Detect Systems
+    const systems = [];
+    if (textUpper.includes("SAP")) systems.push("SAP ERP");
+    if (textUpper.includes("EXCEL") || textUpper.includes("PLANILLA")) systems.push("Microsoft Excel");
+    if (textUpper.includes("PDF")) systems.push("Archivos PDF");
+    if (textUpper.includes("ACTIVE DIRECTORY") || textUpper.includes("AZURE AD")) systems.push("Active Directory");
+    if (textUpper.includes("WHATSAPP")) systems.push("WhatsApp");
+    if (textUpper.includes("EMAIL") || textUpper.includes("CORREO") || textUpper.includes("OUTLOOK")) systems.push("Email");
+    if (systems.length === 0) systems.push("Sistemas Corporativos Legados");
+
+    // 3. Extract Specific Metrics (Volume, Time, Money, Pain)
+    const volumeMatch = rawText.match(/(\d+[\d\.,]*)\s*(solicitudes|facturas|tickets|documentos|archivos|pedidos|registros|órdenes|ordenes)/i);
+    const volumeText = volumeMatch ? `${volumeMatch[1]} ${volumeMatch[2]}` : "el volumen procesado";
+
+    const hoursMatch = rawText.match(/(\d+)\s*(horas|hrs|h|días|dias)/i);
+    const timeText = hoursMatch ? `${hoursMatch[1]} ${hoursMatch[2]}` : null;
+
+    const costMatch = rawText.match(/(\$\s*[\d\.,]+|\d+\s*(usd|dólares|dolares|pesos))/i);
+    const costText = costMatch ? costMatch[1] : null;
+
+    const painMatch = rawText.match(/(errores\s*de\s*[\w\s]+|detiene\s*[\w\s]+|retraso\s*[\w\s]+|pérdida\s*[\w\s]+|demora\s*[\w\s]+)/i);
+    const painText = painMatch ? painMatch[1].trim() : null;
+
+    return { domain, systems, volumeText, timeText, costText, painText, rawText };
+  }
+
+  // Dynamic Context-Aware Question Generator Function tailored to each studied case
+  function generateContextualQuestions(rawText) {
+    const ctx = extractCaseContext(rawText);
+    const mainSys = ctx.systems[0] || "el sistema principal";
+    const secSys = ctx.systems[1] || "las planillas de control";
     const questions = [];
 
-    // 1. ProcessOptimizer Question
-    if (textUpper.includes("FACTURA") || textUpper.includes("PDF") || textUpper.includes("FINANCIERO")) {
-      questions.push({
-        agent: "ProcessOptimizer_Agent",
-        pilar: "Operaciones",
-        question: "1. ¿Qué porcentaje de las facturas/documentos recibidos mensualmente presenta errores de datos o formato que obligan a una revisión manual excepcional?"
-      });
-    } else if (textUpper.includes("RRHH") || textUpper.includes("EMPLEADO") || textUpper.includes("ONBOARDING")) {
-      questions.push({
-        agent: "ProcessOptimizer_Agent",
-        pilar: "Operaciones",
-        question: "1. ¿Cuáles son los 3 formularios o carpetas en papel que más retrasan el alta operativa del nuevo trabajador?"
-      });
-    } else if (textUpper.includes("TICKET") || textUpper.includes("SOPORTE") || textUpper.includes("AYUDA")) {
-      questions.push({
-        agent: "ProcessOptimizer_Agent",
-        pilar: "Operaciones",
-        question: "1. ¿Qué porcentaje de los tickets atendidos mensualmente corresponde a reseteos simples de contraseñas versus problemas técnicos complejos?"
-      });
-    } else {
-      questions.push({
-        agent: "ProcessOptimizer_Agent",
-        pilar: "Operaciones",
-        question: "1. ¿En qué paso específico del proceso manual se genera la mayor acumulación de tareas y tiempo de espera entre áreas?"
-      });
+    // 1. ProcessOptimizer_Agent (Operations)
+    let q1 = `1. Sobre el proceso de ${ctx.domain} (${ctx.volumeText}): ¿Qué porcentaje de las solicitudes presenta descripciones o formatos ambiguos que obligan a revisiones manuales excepcionales?`;
+    if (ctx.timeText) {
+      q1 = `1. Dado que el proceso de ${ctx.domain} toma actualmente ${ctx.timeText}: ¿En qué paso específico entre ${mainSys} y ${secSys} se produce el mayor cuello de botella?`;
     }
+    questions.push({ agent: "ProcessOptimizer_Agent", pilar: "Operaciones", question: q1 });
 
-    // 2. ROI_Guardian Question
-    if (textUpper.includes("FACTURA") || textUpper.includes("PAGO")) {
-      questions.push({
-        agent: "ROI_Guardian_Agent",
-        pilar: "ROI Financiero",
-        question: "2. ¿Existen intereses, multas o pérdidas de descuentos por pronto pago debido a demoras en la aprobación de estos documentos?"
-      });
-    } else if (textUpper.includes("RRHH") || textUpper.includes("EMPLEADO")) {
-      questions.push({
-        agent: "ROI_Guardian_Agent",
-        pilar: "ROI Financiero",
-        question: "2. ¿Cuál es el costo estimado para la empresa por cada día que un nuevo colaborador permanece sin sus accesos o equipo listo para trabajar?"
-      });
-    } else if (textUpper.includes("TICKET") || textUpper.includes("SOPORTE")) {
-      questions.push({
-        agent: "ROI_Guardian_Agent",
-        pilar: "ROI Financiero",
-        question: "2. ¿Cuántos técnicos dedicados a soporte Nivel 1 atienden estas solicitudes y cuál es su costo horario estimado?"
-      });
-    } else {
-      questions.push({
-        agent: "ROI_Guardian_Agent",
-        pilar: "ROI Financiero",
-        question: "2. ¿Cuál es el salario promedio mensual o valor de la hora del personal dedicado a realizar estas tareas manuales?"
-      });
+    // 2. ROI_Guardian_Agent (ROI Financiero)
+    let q2 = `2. Respecto al impacto económico en ${ctx.domain}: ¿Cuál es el costo financiero o la pérdida estimada para la empresa causada por ${ctx.painText || 'los retrasos operativos'}?`;
+    if (ctx.costText) {
+      q2 = `2. En relación al monto o umbral detectado (${ctx.costText}): ¿Existen pérdidas indirectas o costos de oportunidad derivados de la demora en la aprobación de estas operaciones?`;
     }
+    questions.push({ agent: "ROI_Guardian_Agent", pilar: "ROI Financiero", question: q2 });
 
-    // 3. Governance_Compliance Question
-    if (textUpper.includes("EMPLEADO") || textUpper.includes("RRHH") || textUpper.includes("SALARIO") || textUpper.includes("CONTRATO")) {
-      questions.push({
-        agent: "Governance_Compliance_Agent",
-        pilar: "Gobernanza",
-        question: "3. ¿El proceso manipula datos personales altamente confidenciales de trabajadores (RUT, cuentas bancarias, fichas médicas) sujetas a normativas PII?"
-      });
-    } else if (textUpper.includes("FACTURA") || textUpper.includes("PAGO") || textUpper.includes("BANCO")) {
-      questions.push({
-        agent: "Governance_Compliance_Agent",
-        pilar: "Gobernanza",
-        question: "3. ¿Se requiere la firma digital o aprobación formal auditada en 2 pasos para desembolsos o pagos a proveedores?"
-      });
-    } else {
-      questions.push({
-        agent: "Governance_Compliance_Agent",
-        pilar: "Gobernanza",
-        question: "3. ¿Los servidores e información de la empresa residen en infraestructura local (On-Premise) o en nube (AWS/Azure/GCP)?"
-      });
+    // 3. Governance_Compliance_Agent (Gobernanza)
+    let q3 = `3. En materia de Gobernanza y Seguridad para ${ctx.domain}: ¿Qué controles de auditoría o firmas digitales de autorización se exigen al integrar ${mainSys}?`;
+    if (ctx.costText) {
+      q3 = `3. Para transacciones o compras críticas (ej: ${ctx.costText}): ¿Se requiere aprobación en 2 pasos de la jefatura con registro de auditoría cifrado?`;
     }
+    questions.push({ agent: "Governance_Compliance_Agent", pilar: "Gobernanza", question: q3 });
 
-    // 4. People_Culture Question
-    if (textUpper.includes("TICKET") || textUpper.includes("SOPORTE")) {
-      questions.push({
-        agent: "People_Culture_Agent",
-        pilar: "Cultura",
-        question: "4. ¿Cuál es la tasa de desgaste o rotación del equipo de soporte debido a la atención de consultas altamente repetitivas y rutinarias?"
-      });
-    } else if (textUpper.includes("RRHH") || textUpper.includes("OPERACIONES")) {
-      questions.push({
-        agent: "People_Culture_Agent",
-        pilar: "Cultura",
-        question: "4. ¿Qué disposición tiene el equipo operativo para usar asistentes virtuales de IA o existe temor a la digitalización de sus funciones?"
-      });
-    } else {
-      questions.push({
-        agent: "People_Culture_Agent",
-        pilar: "Cultura",
-        question: "4. ¿A qué actividades estratégicas de valor preferiría la empresa destinar las horas que hoy se pierden en el trabajo manual?"
-      });
-    }
+    // 4. People_Culture_Agent (Cultura)
+    let q4 = `4. En relación al equipo operativo de ${ctx.domain}: ¿Existe resistencia a reemplazar ${secSys} por un asistente de IA autónomo, o el personal está dispuesto a capacitarse en la herramienta?`;
+    questions.push({ agent: "People_Culture_Agent", pilar: "Cultura", question: q4 });
 
-    // 5. Tech_Connector Question
-    if (textUpper.includes("SAP")) {
-      questions.push({
-        agent: "Tech_Connector_Agent",
-        pilar: "Tecnología",
-        question: "5. ¿La versión de SAP utilizada en la empresa (S/4HANA o ECC) cuenta con módulos OData / REST APIs habilitados o requiere conectores directos?"
-      });
-    } else if (textUpper.includes("ACTIVE DIRECTORY") || textUpper.includes("USUARIOS")) {
-      questions.push({
-        agent: "Tech_Connector_Agent",
-        pilar: "Tecnología",
-        question: "5. ¿Utilizan Microsoft Entra ID (Azure AD), Okta o un Active Directory local para la autenticación y asignación de permisos de usuarios?"
-      });
-    } else {
-      questions.push({
-        agent: "Tech_Connector_Agent",
-        pilar: "Tecnología",
-        question: "5. ¿Los sistemas o planillas actuales disponen de interfaces de conexión API / Webhooks o requieren integraciones a nivel de archivo/base de datos?"
-      });
-    }
+    // 5. Tech_Connector_Agent (Tecnología)
+    let q5 = `5. Sobre la infraestructura de ${mainSys}: ¿Disponen de APIs REST / Webhooks o conectores directos para consultar datos e inventarios en tiempo real?`;
+    questions.push({ agent: "Tech_Connector_Agent", pilar: "Tecnología", question: q5 });
 
-    // 6. Agile_Scrum Question
-    questions.push({
-      agent: "Agile_Scrum_Agent",
-      pilar: "Metodologías Ágiles",
-      question: "6. ¿Cuáles son las 2 victorias tempranas (Quick Wins) o funcionalidades críticas que la gerencia exige ver automatizadas en el Sprint 1 (primeras 2 semanas)?"
-    });
+    // 6. Agile_Scrum_Agent (Agile)
+    let q6 = `6. Para definir el MVP del Sprint 1 (primeras 2 semanas) en ${ctx.domain}: ¿Cuáles son las 2 funcionalidades o tipos de solicitudes más urgentes que la gerencia exige automatizar como Quick Win?`;
+    questions.push({ agent: "Agile_Scrum_Agent", pilar: "Metodologías Ágiles", question: q6 });
 
     return questions;
   }
@@ -401,7 +357,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const hourMatch = diagnosticText.match(/(\d+)\s*(horas|hrs|h|días|dias)/i);
     const estimatedHours = hourMatch ? parseInt(hourMatch[1]) * (hourMatch[2].toLowerCase().includes("día") ? 8 : 1) : 14;
 
-    const questionsList = generateContextualQuestions(textUpper);
+    const questionsList = generateContextualQuestions(diagnosticText);
 
     // AGENT 1: ProcessOptimizer_Agent
     setStepState('ops', 'active');
