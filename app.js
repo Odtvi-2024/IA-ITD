@@ -13,6 +13,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const statusLabel = document.getElementById('execution-status-label');
   const btnOpenReport = document.getElementById('btn-open-report');
   const navReportLink = document.getElementById('nav-report-link');
+  const navTrackerLink = document.getElementById('nav-tracker-link');
+  const navAnalyticsLink = document.getElementById('nav-analytics-link');
+  const analyticsSection = document.getElementById('analytics-section');
 
   const btnModeSim = document.getElementById('btn-mode-sim');
   const btnModeApi = document.getElementById('btn-mode-api');
@@ -150,7 +153,30 @@ document.addEventListener('DOMContentLoaded', () => {
     statusLabel.textContent = "Análisis completado";
     btnOpenReport.style.display = "flex";
     trackerSection.style.display = "block";
+    if (analyticsSection) analyticsSection.style.display = "block";
   });
+
+  // Slider de Escala de Negocio
+  const scaleSlider = document.getElementById('scale-slider');
+  const sliderVolumeVal = document.getElementById('slider-volume-val');
+  const simAnnualSavings = document.getElementById('sim-annual-savings');
+  const simHoursSaved = document.getElementById('sim-hours-saved');
+  const simCapacityBoost = document.getElementById('sim-capacity-boost');
+
+  if (scaleSlider) {
+    scaleSlider.addEventListener('input', (e) => {
+      const val = parseInt(e.target.value);
+      if (sliderVolumeVal) sliderVolumeVal.textContent = `$${val.toLocaleString('es-CL')} CLP / mes`;
+      
+      const annualSavingsCLP = Math.round(val * 0.48);
+      const hoursSaved = Math.round((val / 25000000) * 140);
+      const capBoost = Math.min(85, Math.round(25 + (val / 25000000) * 10));
+
+      if (simAnnualSavings) simAnnualSavings.textContent = `$${annualSavingsCLP.toLocaleString('es-CL')} CLP`;
+      if (simHoursSaved) simHoursSaved.textContent = `${hoursSaved} Horas / mes`;
+      if (simCapacityBoost) simCapacityBoost.textContent = `+${capBoost}% Capacidad`;
+    });
+  }
 
   // Re-evaluation button click
   btnSubmitAnswers.addEventListener('click', async () => {
@@ -778,9 +804,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
       ${actionsHTML}
 
-      <div class="report-section">
-        <h4><i class="fa-solid fa-code"></i> Ficha Técnica Estructurada (JSON Dictamen)</h4>
-        <pre class="json-viewer" style="font-size:0.85rem;">${JSON.stringify(data, null, 2)}</pre>
+      <div class="report-section" style="background:rgba(16,185,129,0.05); border:1px solid rgba(16,185,129,0.2);">
+        <h4 style="color:var(--accent-emerald);"><i class="fa-solid fa-certificate"></i> Garantía de Entregable Oficial IA+ITD</h4>
+        <p style="font-size:0.85rem; color:var(--text-muted); margin-top:0.3rem;">Este pilar entregará una matriz certificada con trazabilidad completa: <b>${data.tangible_deliverables}</b>.</p>
       </div>
     `;
 
