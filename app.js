@@ -74,10 +74,15 @@ document.addEventListener('DOMContentLoaded', () => {
       processTextArea.value = scenarios[e.target.value];
     } else if (e.target.value === 'custom') {
       processTextArea.value = "";
-      processTextArea.placeholder = "Pega aquí el diagnóstico real realizado en tu empresa...";
+      processTextArea.placeholder = "Pega o escribe aquí el diagnóstico real realizado en tu empresa...";
       processTextArea.focus();
     }
   });
+
+  // Limpiar campo si está seleccionada la opción custom al cargar
+  if (presetSelect.value === 'custom') {
+    processTextArea.value = "";
+  }
 
   btnModeSim.addEventListener('click', () => {
     mode = 'sim';

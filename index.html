@@ -107,16 +107,16 @@
           <div class="form-group">
             <label class="form-label">Seleccionar Escenario o Ingresar Diagnóstico Real:</label>
             <select class="form-select" id="preset-scenario">
+              <option value="custom" selected>-- Pegar Diagnóstico Real de la Empresa --</option>
               <option value="1">1. Aprobación y Pago de Facturas en SAP / Excel (Finanzas)</option>
               <option value="2">2. Onboarding de Nuevos Empleados y Accesos IT (RRHH / Operaciones)</option>
               <option value="3">3. Triaje y Resolución de Tickets de Soporte Técnico (Mesa de Ayuda)</option>
-              <option value="custom">-- Pegar Diagnóstico Real de la Empresa --</option>
             </select>
           </div>
 
           <div class="form-group">
             <label class="form-label">Descripción Detallada del Diagnóstico:</label>
-            <textarea class="form-textarea" id="process-description" style="min-height:130px;">El departamento financiero recibe 500 facturas mensuales en PDF por correo. Los analistas revisan manualmente cada factura, la digitan en Excel, buscan el centro de costo en SAP y solicitan aprobación vía Email a gerencia. El proceso toma 14 horas por lote y genera errores de digitación.</textarea>
+            <textarea class="form-textarea" id="process-description" style="min-height:130px;" placeholder="Pega o escribe aquí el diagnóstico real realizado en tu empresa (ej: problemas detectados, sistemas usados, horas perdidas, departamento afectado)..."></textarea>
           </div>
 
           <button class="btn-primary" id="btn-run-simulation">
