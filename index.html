@@ -51,11 +51,11 @@
         </div>
 
         <div style="display:flex; gap: 1rem; align-items:center;">
-          <button class="btn-primary" id="btn-new-analysis" style="background: linear-gradient(135deg, var(--accent-emerald), var(--accent-cyan)); color:#000; font-weight:bold; font-size:0.85rem; padding:0.5rem 0.9rem;">
+          <button class="btn-primary" id="btn-new-analysis" onclick="if(window.resetForNewCompany) window.resetForNewCompany();" style="background: linear-gradient(135deg, var(--accent-emerald), var(--accent-cyan)); color:#000; font-weight:bold; font-size:0.85rem; padding:0.5rem 0.9rem;">
             <i class="fa-solid fa-plus-circle"></i> Evaluar Nueva Empresa
           </button>
 
-          <button class="btn-primary" id="btn-open-report" style="background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue)); color:#fff; display:none;">
+          <button class="btn-primary" id="btn-open-report" onclick="if(window.openExecutiveReport) window.openExecutiveReport();" style="background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue)); color:#fff; display:none;">
             <i class="fa-solid fa-file-pdf"></i> Ver Informe Final Exhaustivo
           </button>
 
@@ -289,7 +289,7 @@
                 <h3 class="card-title"><i class="fa-solid fa-file-signature" style="color: var(--accent-cyan);"></i> Diagnóstico Inicial de la Empresa</h3>
                 <span style="font-size: 0.8rem; color: var(--text-muted);" id="execution-status-label">Ingresa la problemática</span>
               </div>
-              <button class="btn-secondary" id="btn-reset-form" style="font-size:0.75rem; padding: 0.35rem 0.75rem;">
+              <button class="btn-secondary" id="btn-reset-form" onclick="if(window.resetForNewCompany) window.resetForNewCompany();" style="font-size:0.75rem; padding: 0.35rem 0.75rem;">
                 <i class="fa-solid fa-rotate-left"></i> Limpiar para Otra Empresa
               </button>
             </div>
@@ -314,7 +314,7 @@
               <textarea class="form-textarea" id="company-objective" style="min-height:85px;" placeholder="Describe qué busca lograr la empresa (ej: agregar mayor valor a nuestros servicios de diseño, duplicar facturación sin aumentar nómina, reducir tiempos a la mitad, etc.)..."></textarea>
             </div>
 
-            <button class="btn-primary" id="btn-run-simulation">
+            <button class="btn-primary" id="btn-run-simulation" onclick="if(window.triggerSimulation) window.triggerSimulation();">
               <i class="fa-solid fa-brain"></i> Iniciar Análisis Exhaustivo de Agentes
             </button>
           </div>

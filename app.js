@@ -232,15 +232,15 @@ document.addEventListener('DOMContentLoaded', () => {
     clientClarifications = {};
   });
 
-  btnRun.addEventListener('click', async () => {
+  async function triggerSimulation() {
     if (isRunning) return;
-    let text = processTextArea.value.trim();
+    let text = processTextArea ? processTextArea.value.trim() : "";
     let objective = objectiveTextArea ? objectiveTextArea.value.trim() : "";
 
     // Si los recuadros están vacíos, autocompletar con un caso real de la Pyme para ejecutar directamente
     if (!text) {
       text = "Mi empresa es pequeña, tenemos un nivel de venta de 25.000.000 de pesos mensuales. Somos una empresa que se dedica a dar servicios de diseño industrial. Somos en total 8 trabajadores full-time y los otros los contratamos part-time dependiendo de la demanda.";
-      processTextArea.value = text;
+      if (processTextArea) processTextArea.value = text;
       if (objectiveTextArea && !objective) {
         objective = "Agregar mayor valor estratégico a nuestros servicios de diseño industrial, automatizar procesos operativos y duplicar nuestro margen sin sobrecargar la nómina.";
         objectiveTextArea.value = objective;
@@ -249,9 +249,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       isRunning = true;
-      btnRun.disabled = true;
-      const originalBtnText = btnRun.innerHTML;
-      btnRun.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Ejecutando 6 Agentes IA+ITD...`;
+      if (btnRun) {
+        btnRun.disabled = true;
+        btnRun.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Ejecutando 6 Agentes IA+ITD...`;
+      }
       if (statusLabel) statusLabel.textContent = "Analizando brecha (As-Is vs. To-Be)...";
       resetPipelineUI();
       if (missingInfoSection) missingInfoSection.style.display = "none";
@@ -259,8 +260,10 @@ document.addEventListener('DOMContentLoaded', () => {
       await runExhaustiveAnalysis(text, objective);
 
       isRunning = false;
-      btnRun.disabled = false;
-      btnRun.innerHTML = originalBtnText;
+      if (btnRun) {
+        btnRun.disabled = false;
+        btnRun.innerHTML = `<i class="fa-solid fa-brain"></i> Iniciar Análisis Exhaustivo de Agentes`;
+      }
       if (statusLabel) statusLabel.textContent = "Análisis completado con éxito";
       if (btnOpenReport) btnOpenReport.style.display = "flex";
       if (trackerSection) trackerSection.style.display = "block";
@@ -276,10 +279,20 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (err) {
       console.error("Error en ejecución de agentes:", err);
       isRunning = false;
-      btnRun.disabled = false;
-      btnRun.innerHTML = `<i class="fa-solid fa-brain"></i> Iniciar Análisis Exhaustivo de Agentes`;
+      if (btnRun) {
+        btnRun.disabled = false;
+        btnRun.innerHTML = `<i class="fa-solid fa-brain"></i> Iniciar Análisis Exhaustivo de Agentes`;
+      }
     }
-  });
+  }
+
+  if (btnRun) btnRun.addEventListener('click', triggerSimulation);
+
+  // Bind global window references for inline onclick attributes
+  window.triggerSimulation = triggerSimulation;
+  window.resetForNewCompany = resetForNewCompany;
+  window.showScreen = showScreen;
+  window.openExecutiveReport = openExecutiveReport;
 
   // Slider de Escala de Negocio
   const scaleSlider = document.getElementById('scale-slider');
