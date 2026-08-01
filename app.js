@@ -14,6 +14,62 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnOpenReport = document.getElementById('btn-open-report');
   const navReportLink = document.getElementById('nav-report-link');
 
+  const btnModeSim = document.getElementById('btn-mode-sim');
+  const btnModeApi = document.getElementById('btn-mode-api');
+
+  // Missing Info Section
+  const missingInfoSection = document.getElementById('missing-info-section');
+  const missingQuestionsList = document.getElementById('missing-questions-list');
+  const btnSubmitAnswers = document.getElementById('btn-submit-answers');
+
+  // Tracker Section Elements
+  const trackerSection = document.getElementById('tracker-section');
+  const trackerMilestonesList = document.getElementById('tracker-milestones-list');
+  const trackerProgressPercentage = document.getElementById('tracker-progress-percentage');
+  const trackerProgressBar = document.getElementById('tracker-progress-bar');
+
+  // KPI elements
+  const kpiOps = document.getElementById('kpi-ops');
+  const kpiRoi = document.getElementById('kpi-roi');
+  const kpiGov = document.getElementById('kpi-gov');
+  const kpiCulture = document.getElementById('kpi-culture');
+  const kpiTech = document.getElementById('kpi-tech');
+
+  // Pipeline steps
+  const steps = {
+    ops: document.getElementById('step-ops'),
+    roi: document.getElementById('step-roi'),
+    gov: document.getElementById('step-gov'),
+    culture: document.getElementById('step-culture'),
+    tech: document.getElementById('step-tech'),
+    agile: document.getElementById('step-agile')
+  };
+
+  // Modals
+  const modalAgent = document.getElementById('modal-agent');
+  const modalAgentTitle = document.getElementById('modal-agent-title');
+  const modalAgentBody = document.getElementById('modal-agent-body');
+  const btnCloseAgentModal = document.getElementById('btn-close-agent-modal');
+
+  const modalReport = document.getElementById('modal-report');
+  const modalReportBody = document.getElementById('modal-report-body');
+  const btnCloseReportModal = document.getElementById('btn-close-report-modal');
+  const btnPrintReport = document.getElementById('btn-print-report');
+
+  // State
+  let mode = 'sim'; 
+  let isRunning = false;
+  let latestExecutionData = null;
+  let clientClarifications = {}; 
+  let trackerTasksState = []; 
+
+  // Preset scenarios
+  const scenarios = {
+    "1": "El departamento financiero recibe 500 facturas mensuales en PDF por correo. Los analistas revisan manualmente cada factura, la digitan en Excel, buscan el centro de costo en SAP y solicitan aprobación vía Email a gerencia. El proceso toma 14 horas por lote y genera errores de digitación.",
+    "2": "El equipo de RRHH tarda 5 días hábiles en enrolar a un nuevo empleado: llenar formularios en papel, crear manualmente usuarios en Active Directory, solicitar credenciales en cuentas bancarias corporativas y asignar equipo de cómputo en Mesa de Ayuda.",
+    "3": "Mesa de ayuda recibe 1,200 tickets al mes de restablecimiento de contraseña y permisos. Los analistas atienden cada ticket en un promedio de 25 minutos, congestionando el soporte y retrasando problemas críticos de la empresa."
+  };
+
   const scenarioObjectives = {
     "1": "Automatizar la aprobación y contabilización de facturas en SAP para eliminar el 90% del tiempo de procesado manual y cero errores.",
     "2": "Reducir el tiempo de alta de nuevos empleados de 5 días a menos de 2 horas con creación automática de usuarios y permisos en Active Directory.",
@@ -40,19 +96,23 @@ document.addEventListener('DOMContentLoaded', () => {
     if (objectiveTextArea) objectiveTextArea.value = "";
   }
 
-  btnModeSim.addEventListener('click', () => {
-    mode = 'sim';
-    btnModeSim.classList.add('active');
-    btnModeApi.classList.remove('active');
-    logTerminal("SISTEMA IA+ITD", "Modo cambiado a MOTOR DE ANÁLISIS DE DIAGNÓSTICO", "tech");
-  });
+  if (btnModeSim) {
+    btnModeSim.addEventListener('click', () => {
+      mode = 'sim';
+      btnModeSim.classList.add('active');
+      if (btnModeApi) btnModeApi.classList.remove('active');
+      logTerminal("SISTEMA IA+ITD", "Modo cambiado a MOTOR DE ANÁLISIS DE DIAGNÓSTICO", "tech");
+    });
+  }
 
-  btnModeApi.addEventListener('click', () => {
-    mode = 'api';
-    btnModeApi.classList.add('active');
-    btnModeSim.classList.remove('active');
-    logTerminal("SISTEMA IA+ITD", "Modo cambiado a BACKEND REST API (http://localhost:8000)", "tech");
-  });
+  if (btnModeApi) {
+    btnModeApi.addEventListener('click', () => {
+      mode = 'api';
+      btnModeApi.classList.add('active');
+      if (btnModeSim) btnModeSim.classList.remove('active');
+      logTerminal("SISTEMA IA+ITD", "Modo cambiado a BACKEND REST API (http://localhost:8000)", "tech");
+    });
+  }
 
   btnClear.addEventListener('click', () => {
     terminalOutput.innerHTML = `
@@ -125,7 +185,8 @@ document.addEventListener('DOMContentLoaded', () => {
     await delay(800);
 
     const enrichedText = processTextArea.value.trim() + combinedClarificationText;
-    await runExhaustiveAnalysis(enrichedText, true);
+    const objective = objectiveTextArea ? objectiveTextArea.value.trim() : "";
+    await runExhaustiveAnalysis(enrichedText, objective, true);
 
     isRunning = false;
     btnSubmitAnswers.disabled = false;
