@@ -2209,16 +2209,19 @@ h1, h2, h3, h4, .brand-title {
     buildTrackerTasksState();
   }
 
-  // Render Missing Questions Panel
+  // Render Missing Questions Panel (Bulletproof Null Guards)
   function renderMissingQuestions(questions) {
-    missingQuestionsList.innerHTML = questions.map((q) => `
+    const listEl = document.getElementById('missing-questions-list');
+    const secEl = document.getElementById('missing-info-section');
+    if (!listEl) return;
+    listEl.innerHTML = questions.map((q) => `
       <div style="background: rgba(0,0,0,0.3); padding:0.75rem 1rem; border-radius:6px; border-left:3px solid var(--accent-amber);">
         <div style="font-size:0.8rem; color:var(--accent-amber); font-weight:bold;">[${q.agent}] ${q.pilar}:</div>
         <div style="font-size:0.9rem; margin-top:0.2rem;">${q.question}</div>
         <input type="text" class="form-input user-answer-input" data-agent="${q.agent}" data-question="${q.question}" style="margin-top:0.4rem; font-size:0.85rem; padding:0.5rem 0.8rem;" placeholder="Escribe aquí tu respuesta específica para este agente...">
       </div>
     `).join('');
-    missingInfoSection.style.display = "block";
+    if (secEl) secEl.style.display = "block";
   }
 
   // Build Interactive Milestone Tracker List for Client
